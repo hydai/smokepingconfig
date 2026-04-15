@@ -89,4 +89,4 @@ Edit `config.txt` at the repo root. The next `npm run build` (or `npm run prebui
 
 ## License
 
-Choose your own; not yet provided.
+[MIT](./LICENSE) © 2026 hydai
