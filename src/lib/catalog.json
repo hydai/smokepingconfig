@@ -1,9 +1,911 @@
 {
+  "schemaVer": 1,
   "root": {
     "probe": "FPing",
     "menu": "Top",
     "title": "Network Latency Grapher"
   },
-  "nodes": [],
-  "schemaVer": 1
+  "nodes": [
+    {
+      "id": "c:CDN",
+      "source": "curated",
+      "type": "category",
+      "name": "CDN",
+      "menu": "CDN",
+      "title": "CDN",
+      "included": true,
+      "children": [
+        {
+          "id": "c:CDN/Cloudflare",
+          "source": "curated",
+          "type": "target",
+          "name": "Cloudflare",
+          "menu": "Cloudflare",
+          "title": "cloudflare.com",
+          "included": true,
+          "children": [],
+          "host": "cloudflare.com"
+        },
+        {
+          "id": "c:CDN/Fastly",
+          "source": "curated",
+          "type": "target",
+          "name": "Fastly",
+          "menu": "Fastly",
+          "title": "Fastly",
+          "included": true,
+          "children": [],
+          "host": "www.fastly.com"
+        },
+        {
+          "id": "c:CDN/Akamai",
+          "source": "curated",
+          "type": "target",
+          "name": "Akamai",
+          "menu": "Akamai",
+          "title": "Akamai",
+          "included": true,
+          "children": [],
+          "host": "www.akamai.com"
+        },
+        {
+          "id": "c:CDN/GoogleFonts",
+          "source": "curated",
+          "type": "target",
+          "name": "GoogleFonts",
+          "menu": "Google Fonts",
+          "title": "Google Fonts",
+          "included": true,
+          "children": [],
+          "host": "fonts.gstatic.com"
+        }
+      ]
+    },
+    {
+      "id": "c:Cloud",
+      "source": "curated",
+      "type": "category",
+      "name": "Cloud",
+      "menu": "Cloud",
+      "title": "Cloud",
+      "included": true,
+      "children": [
+        {
+          "id": "c:Cloud/AWS",
+          "source": "curated",
+          "type": "target",
+          "name": "AWS",
+          "menu": "Amazon Web Service",
+          "title": "Amazon Web Service",
+          "included": true,
+          "children": [],
+          "host": "aws.amazon.com"
+        },
+        {
+          "id": "c:Cloud/GCP",
+          "source": "curated",
+          "type": "target",
+          "name": "GCP",
+          "menu": "Google Cloud",
+          "title": "Google Cloud",
+          "included": true,
+          "children": [],
+          "host": "cloud.google.com"
+        }
+      ]
+    },
+    {
+      "id": "c:Streaming",
+      "source": "curated",
+      "type": "category",
+      "name": "Streaming",
+      "menu": "Streaming",
+      "title": "Streaming",
+      "included": true,
+      "children": [
+        {
+          "id": "c:Streaming/Youtube",
+          "source": "curated",
+          "type": "target",
+          "name": "Youtube",
+          "menu": "YouTube",
+          "title": "YouTube",
+          "included": true,
+          "children": [],
+          "host": "youtube.com"
+        },
+        {
+          "id": "c:Streaming/Netflix",
+          "source": "curated",
+          "type": "target",
+          "name": "Netflix",
+          "menu": "Netflix",
+          "title": "Netflix CDN",
+          "included": true,
+          "children": [],
+          "host": "fast.com"
+        }
+      ]
+    },
+    {
+      "id": "c:Internet",
+      "source": "curated",
+      "type": "category",
+      "name": "Internet",
+      "menu": "Internet",
+      "title": "Internet",
+      "included": true,
+      "children": [
+        {
+          "id": "c:Internet/Facebook",
+          "source": "curated",
+          "type": "target",
+          "name": "Facebook",
+          "menu": "Facebook",
+          "title": "Facebook",
+          "included": true,
+          "children": [],
+          "host": "facebook.com"
+        },
+        {
+          "id": "c:Internet/Google",
+          "source": "curated",
+          "type": "target",
+          "name": "Google",
+          "menu": "Google",
+          "title": "google.com",
+          "included": true,
+          "children": [],
+          "host": "google.com"
+        },
+        {
+          "id": "c:Internet/GitHub",
+          "source": "curated",
+          "type": "target",
+          "name": "GitHub",
+          "menu": "GitHub",
+          "title": "GitHub",
+          "included": true,
+          "children": [],
+          "host": "github.com"
+        },
+        {
+          "id": "c:Internet/HiNet",
+          "source": "curated",
+          "type": "target",
+          "name": "HiNet",
+          "menu": "HiNet",
+          "title": "HiNet",
+          "included": true,
+          "children": [],
+          "host": "www.hinet.net"
+        }
+      ]
+    },
+    {
+      "id": "c:Asia",
+      "source": "curated",
+      "type": "category",
+      "name": "Asia",
+      "menu": "Asia",
+      "title": "Asia Connectivity",
+      "included": true,
+      "children": [
+        {
+          "id": "c:Asia/Taiwan",
+          "source": "curated",
+          "type": "category",
+          "name": "Taiwan",
+          "menu": "Taiwan",
+          "title": "Taiwan",
+          "included": true,
+          "children": [
+            {
+              "id": "c:Asia/Taiwan/HiNet",
+              "source": "curated",
+              "type": "target",
+              "name": "HiNet",
+              "menu": "HiNet",
+              "title": "HiNet",
+              "included": true,
+              "children": [],
+              "host": "168.95.1.1"
+            },
+            {
+              "id": "c:Asia/Taiwan/TWM",
+              "source": "curated",
+              "type": "target",
+              "name": "TWM",
+              "menu": "\u53f0\u7063\u5927\u5bec\u983b",
+              "title": "\u53f0\u7063\u5927\u5bec\u983b",
+              "included": true,
+              "children": [],
+              "host": "61.31.233.1"
+            },
+            {
+              "id": "c:Asia/Taiwan/Seednet",
+              "source": "curated",
+              "type": "target",
+              "name": "Seednet",
+              "menu": "Seednet",
+              "title": "Seednet",
+              "included": true,
+              "children": [],
+              "host": "139.175.55.244 139.175.150.20 139.175.10.20 211.78.130.2"
+            },
+            {
+              "id": "c:Asia/Taiwan/SoNet",
+              "source": "curated",
+              "type": "target",
+              "name": "SoNet",
+              "menu": "So-net",
+              "title": "So-net",
+              "included": true,
+              "children": [],
+              "host": "61.64.127.1"
+            },
+            {
+              "id": "c:Asia/Taiwan/APTG",
+              "source": "curated",
+              "type": "target",
+              "name": "APTG",
+              "menu": "\u4e9e\u592a",
+              "title": "\u4e9e\u592a",
+              "included": true,
+              "children": [],
+              "host": "210.200.211.225"
+            }
+          ]
+        }
+      ],
+      "comparisonChildren": [
+        "/Asia/Taiwan/HiNet",
+        "/Asia/Taiwan/TWM",
+        "/Asia/Taiwan/Seednet",
+        "/Asia/Taiwan/SoNet",
+        "/Asia/Taiwan/APTG"
+      ]
+    },
+    {
+      "id": "c:DNS",
+      "source": "curated",
+      "type": "category",
+      "name": "DNS",
+      "menu": "DNS",
+      "title": "DNS",
+      "included": true,
+      "children": [
+        {
+          "id": "c:DNS/GoogleDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "GoogleDNS1",
+          "menu": "Google DNS 1",
+          "title": "Google DNS 8.8.8.8",
+          "included": true,
+          "children": [],
+          "host": "8.8.8.8"
+        },
+        {
+          "id": "c:DNS/GoogleDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "GoogleDNS2",
+          "menu": "Google DNS 2",
+          "title": "Google DNS 8.8.4.4",
+          "included": true,
+          "children": [],
+          "host": "8.8.4.4"
+        },
+        {
+          "id": "c:DNS/OpenDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "OpenDNS1",
+          "menu": "OpenDNS1",
+          "title": "OpenDNS1",
+          "included": true,
+          "children": [],
+          "host": "208.67.222.222"
+        },
+        {
+          "id": "c:DNS/OpenDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "OpenDNS2",
+          "menu": "OpenDNS2",
+          "title": "OpenDNS2",
+          "included": true,
+          "children": [],
+          "host": "208.67.220.220"
+        },
+        {
+          "id": "c:DNS/CloudflareDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "CloudflareDNS1",
+          "menu": "Cloudflare DNS 1",
+          "title": "Cloudflare DNS 1.1.1.1",
+          "included": true,
+          "children": [],
+          "host": "1.1.1.1"
+        },
+        {
+          "id": "c:DNS/CloudflareDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "CloudflareDNS2",
+          "menu": "Cloudflare DNS 2",
+          "title": "Cloudflare DNS 1.0.0.1",
+          "included": true,
+          "children": [],
+          "host": "1.0.0.1"
+        },
+        {
+          "id": "c:DNS/HiNetDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "HiNetDNS1",
+          "menu": "HiNet DNS 1",
+          "title": "HiNet DNS 168.95.1.1",
+          "included": true,
+          "children": [],
+          "host": "168.95.1.1"
+        },
+        {
+          "id": "c:DNS/HiNetDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "HiNetDNS2",
+          "menu": "HiNet DNS 2",
+          "title": "HiNet DNS 168.95.192.1",
+          "included": true,
+          "children": [],
+          "host": "168.95.192.1"
+        },
+        {
+          "id": "c:DNS/L3-1",
+          "source": "curated",
+          "type": "target",
+          "name": "L3-1",
+          "menu": "Level3 DNS 1",
+          "title": "Level3 DNS 4.2.2.1",
+          "included": true,
+          "children": [],
+          "host": "4.2.2.1"
+        },
+        {
+          "id": "c:DNS/L3-2",
+          "source": "curated",
+          "type": "target",
+          "name": "L3-2",
+          "menu": "Level3 DNS 2",
+          "title": "Level3 DNS 4.2.2.2",
+          "included": true,
+          "children": [],
+          "host": "4.2.2.2"
+        },
+        {
+          "id": "c:DNS/Quad9",
+          "source": "curated",
+          "type": "target",
+          "name": "Quad9",
+          "menu": "Quad9",
+          "title": "Quad9 DNS 9.9.9.9",
+          "included": true,
+          "children": [],
+          "host": "9.9.9.9"
+        }
+      ]
+    },
+    {
+      "id": "c:DNSProbes",
+      "source": "curated",
+      "type": "category",
+      "name": "DNSProbes",
+      "menu": "DNS Probes",
+      "title": "DNS Probes",
+      "included": true,
+      "children": [
+        {
+          "id": "c:DNSProbes/GoogleDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "GoogleDNS1",
+          "menu": "Google DNS 1",
+          "title": "Google DNS 8.8.8.8",
+          "included": true,
+          "children": [],
+          "host": "8.8.8.8"
+        },
+        {
+          "id": "c:DNSProbes/GoogleDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "GoogleDNS2",
+          "menu": "Google DNS 2",
+          "title": "Google DNS 8.8.4.4",
+          "included": true,
+          "children": [],
+          "host": "8.8.4.4"
+        },
+        {
+          "id": "c:DNSProbes/OpenDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "OpenDNS1",
+          "menu": "OpenDNS1",
+          "title": "OpenDNS1",
+          "included": true,
+          "children": [],
+          "host": "208.67.222.222"
+        },
+        {
+          "id": "c:DNSProbes/OpenDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "OpenDNS2",
+          "menu": "OpenDNS2",
+          "title": "OpenDNS2",
+          "included": true,
+          "children": [],
+          "host": "208.67.220.220"
+        },
+        {
+          "id": "c:DNSProbes/CloudflareDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "CloudflareDNS1",
+          "menu": "Cloudflare DNS 1",
+          "title": "Cloudflare DNS 1.1.1.1",
+          "included": true,
+          "children": [],
+          "host": "1.1.1.1"
+        },
+        {
+          "id": "c:DNSProbes/CloudflareDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "CloudflareDNS2",
+          "menu": "Cloudflare DNS 2",
+          "title": "Cloudflare DNS 1.0.0.1",
+          "included": true,
+          "children": [],
+          "host": "1.0.0.1"
+        },
+        {
+          "id": "c:DNSProbes/HiNetDNS1",
+          "source": "curated",
+          "type": "target",
+          "name": "HiNetDNS1",
+          "menu": "HiNet DNS 1",
+          "title": "HiNet DNS 168.95.1.1",
+          "included": true,
+          "children": [],
+          "host": "168.95.1.1"
+        },
+        {
+          "id": "c:DNSProbes/HiNetDNS2",
+          "source": "curated",
+          "type": "target",
+          "name": "HiNetDNS2",
+          "menu": "HiNet DNS 2",
+          "title": "HiNet DNS 168.95.192.1",
+          "included": true,
+          "children": [],
+          "host": "168.95.192.1"
+        },
+        {
+          "id": "c:DNSProbes/L3-1",
+          "source": "curated",
+          "type": "target",
+          "name": "L3-1",
+          "menu": "Level3 DNS 1",
+          "title": "Level3 DNS 4.2.2.1",
+          "included": true,
+          "children": [],
+          "host": "4.2.2.1"
+        },
+        {
+          "id": "c:DNSProbes/L3-2",
+          "source": "curated",
+          "type": "target",
+          "name": "L3-2",
+          "menu": "Level3 DNS 2",
+          "title": "Level3 DNS 4.2.2.2",
+          "included": true,
+          "children": [],
+          "host": "4.2.2.2"
+        },
+        {
+          "id": "c:DNSProbes/Quad9",
+          "source": "curated",
+          "type": "target",
+          "name": "Quad9",
+          "menu": "Quad9",
+          "title": "Quad9 DNS 9.9.9.9",
+          "included": true,
+          "children": [],
+          "host": "9.9.9.9"
+        }
+      ],
+      "probe": {
+        "kind": "DNS"
+      }
+    },
+    {
+      "id": "c:Hosting",
+      "source": "curated",
+      "type": "category",
+      "name": "Hosting",
+      "menu": "Hosting",
+      "title": "The hosting service monitoring",
+      "included": true,
+      "children": [
+        {
+          "id": "c:Hosting/Taiwan",
+          "source": "curated",
+          "type": "category",
+          "name": "Taiwan",
+          "menu": "\u53f0\u7063",
+          "title": "\u53f0\u7063\u4e3b\u6a5f\u5546",
+          "included": true,
+          "children": [
+            {
+              "id": "c:Hosting/Taiwan/DCT",
+              "source": "curated",
+              "type": "target",
+              "name": "DCT",
+              "menu": "\u96f2\u9ad8",
+              "title": "DCT",
+              "included": true,
+              "children": [],
+              "host": "210.203.22.254"
+            },
+            {
+              "id": "c:Hosting/Taiwan/YJ",
+              "source": "curated",
+              "type": "target",
+              "name": "YJ",
+              "menu": "\u9060\u632f",
+              "title": "YJ",
+              "included": true,
+              "children": [],
+              "host": "113.196.112.1"
+            },
+            {
+              "id": "c:Hosting/Taiwan/SkyDigi",
+              "source": "curated",
+              "type": "target",
+              "name": "SkyDigi",
+              "menu": "\u5929\u7a7a\u6578\u4f4d",
+              "title": "SkyDigi",
+              "included": true,
+              "children": [],
+              "host": "103.246.218.1"
+            },
+            {
+              "id": "c:Hosting/Taiwan/Nunline",
+              "source": "curated",
+              "type": "target",
+              "name": "Nunline",
+              "menu": "Nunline",
+              "title": "\u52aa\u6069\u6578\u4f4d",
+              "included": true,
+              "children": [],
+              "host": "203.175.104.108"
+            }
+          ],
+          "comparisonChildren": [
+            "/Hosting/Taiwan/DCT",
+            "/Hosting/Taiwan/YJ",
+            "/Hosting/Taiwan/SkyDigi",
+            "/Hosting/Taiwan/Nunline"
+          ]
+        },
+        {
+          "id": "c:Hosting/Linode",
+          "source": "curated",
+          "type": "category",
+          "name": "Linode",
+          "menu": "Linode",
+          "title": "Linode",
+          "included": true,
+          "children": [
+            {
+              "id": "c:Hosting/Linode/US-East",
+              "source": "curated",
+              "type": "target",
+              "name": "US-East",
+              "menu": "US\uff0dEast",
+              "title": "US-East",
+              "included": true,
+              "children": [],
+              "host": "50.116.57.237"
+            },
+            {
+              "id": "c:Hosting/Linode/US-Southeast",
+              "source": "curated",
+              "type": "target",
+              "name": "US-Southeast",
+              "menu": "US\uff0dSoutheast",
+              "title": "US-Southeast",
+              "included": true,
+              "children": [],
+              "host": "50.116.39.117"
+            },
+            {
+              "id": "c:Hosting/Linode/US-Central",
+              "source": "curated",
+              "type": "target",
+              "name": "US-Central",
+              "menu": "US\uff0dCentral",
+              "title": "US-Central",
+              "included": true,
+              "children": [],
+              "host": "50.116.25.154"
+            },
+            {
+              "id": "c:Hosting/Linode/US-West",
+              "source": "curated",
+              "type": "target",
+              "name": "US-West",
+              "menu": "US\uff0dWest",
+              "title": "US-West",
+              "included": true,
+              "children": [],
+              "host": "50.116.14.9"
+            },
+            {
+              "id": "c:Hosting/Linode/EU-Central",
+              "source": "curated",
+              "type": "target",
+              "name": "EU-Central",
+              "menu": "EU\uff0dCentral",
+              "title": "EU-Central",
+              "included": true,
+              "children": [],
+              "host": "139.162.130.8"
+            },
+            {
+              "id": "c:Hosting/Linode/EU-West",
+              "source": "curated",
+              "type": "target",
+              "name": "EU-West",
+              "menu": "EU\uff0dWest",
+              "title": "EU-West",
+              "included": true,
+              "children": [],
+              "host": "176.58.107.39"
+            },
+            {
+              "id": "c:Hosting/Linode/AP-South",
+              "source": "curated",
+              "type": "target",
+              "name": "AP-South",
+              "menu": "AP\uff0dSouth",
+              "title": "AP-South",
+              "included": true,
+              "children": [],
+              "host": "139.162.23.4"
+            },
+            {
+              "id": "c:Hosting/Linode/AP-Northeast",
+              "source": "curated",
+              "type": "target",
+              "name": "AP-Northeast",
+              "menu": "AP\uff0dNortheast",
+              "title": "AP-Northeast",
+              "included": true,
+              "children": [],
+              "host": "139.162.65.37"
+            }
+          ],
+          "comparisonChildren": [
+            "/Hosting/Linode/US-East",
+            "/Hosting/Linode/US-Southeast",
+            "/Hosting/Linode/US-Central",
+            "/Hosting/Linode/US-West",
+            "/Hosting/Linode/EU-Central",
+            "/Hosting/Linode/EU-West",
+            "/Hosting/Linode/AP-South",
+            "/Hosting/Linode/AP-Northeast"
+          ]
+        },
+        {
+          "id": "c:Hosting/Vultr",
+          "source": "curated",
+          "type": "category",
+          "name": "Vultr",
+          "menu": "Vultr",
+          "title": "Vultr",
+          "included": true,
+          "children": [
+            {
+              "id": "c:Hosting/Vultr/Frankfurt",
+              "source": "curated",
+              "type": "target",
+              "name": "Frankfurt",
+              "menu": "Frankfurt",
+              "title": "Frankfurt",
+              "included": true,
+              "children": [],
+              "host": "fra-de-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Paris",
+              "source": "curated",
+              "type": "target",
+              "name": "Paris",
+              "menu": "Paris",
+              "title": "Paris",
+              "included": true,
+              "children": [],
+              "host": "par-fr-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Amsterdam",
+              "source": "curated",
+              "type": "target",
+              "name": "Amsterdam",
+              "menu": "Amsterdam",
+              "title": "Amsterdam",
+              "included": true,
+              "children": [],
+              "host": "ams-nl-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/London",
+              "source": "curated",
+              "type": "target",
+              "name": "London",
+              "menu": "London",
+              "title": "London",
+              "included": true,
+              "children": [],
+              "host": "lon-gb-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Singapore",
+              "source": "curated",
+              "type": "target",
+              "name": "Singapore",
+              "menu": "Singapore",
+              "title": "Singapore",
+              "included": true,
+              "children": [],
+              "host": "sgp-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/New-York",
+              "source": "curated",
+              "type": "target",
+              "name": "New-York",
+              "menu": "New\uff0dYork",
+              "title": "New York",
+              "included": true,
+              "children": [],
+              "host": "nj-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Chicago",
+              "source": "curated",
+              "type": "target",
+              "name": "Chicago",
+              "menu": "Chicago",
+              "title": "Chicago",
+              "included": true,
+              "children": [],
+              "host": "il-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Atlanta",
+              "source": "curated",
+              "type": "target",
+              "name": "Atlanta",
+              "menu": "Atlanta",
+              "title": "Atlanta",
+              "included": true,
+              "children": [],
+              "host": "ga-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Miami",
+              "source": "curated",
+              "type": "target",
+              "name": "Miami",
+              "menu": "Miami",
+              "title": "Miami",
+              "included": true,
+              "children": [],
+              "host": "fl-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Tokyo",
+              "source": "curated",
+              "type": "target",
+              "name": "Tokyo",
+              "menu": "Tokyo",
+              "title": "Tokyo",
+              "included": true,
+              "children": [],
+              "host": "hnd-jp-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Dallas",
+              "source": "curated",
+              "type": "target",
+              "name": "Dallas",
+              "menu": "Dallas",
+              "title": "Dallas",
+              "included": true,
+              "children": [],
+              "host": "tx-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Seattle",
+              "source": "curated",
+              "type": "target",
+              "name": "Seattle",
+              "menu": "Seattle",
+              "title": "Seattle",
+              "included": true,
+              "children": [],
+              "host": "wa-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Silicon-Valley",
+              "source": "curated",
+              "type": "target",
+              "name": "Silicon-Valley",
+              "menu": "Silicon\uff0dValley",
+              "title": "Silicon Valley",
+              "included": true,
+              "children": [],
+              "host": "sjo-ca-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Los-Angeles",
+              "source": "curated",
+              "type": "target",
+              "name": "Los-Angeles",
+              "menu": "Los\uff0dAngeles",
+              "title": "Los Angeles",
+              "included": true,
+              "children": [],
+              "host": "lax-ca-us-ping.vultr.com"
+            },
+            {
+              "id": "c:Hosting/Vultr/Sydney",
+              "source": "curated",
+              "type": "target",
+              "name": "Sydney",
+              "menu": "Sydney",
+              "title": "Sydney",
+              "included": true,
+              "children": [],
+              "host": "syd-au-ping.vultr.com"
+            }
+          ],
+          "comparisonChildren": [
+            "/Hosting/Vultr/Frankfurt",
+            "/Hosting/Vultr/Paris",
+            "/Hosting/Vultr/Amsterdam",
+            "/Hosting/Vultr/London",
+            "/Hosting/Vultr/Singapore",
+            "/Hosting/Vultr/New-York",
+            "/Hosting/Vultr/Chicago",
+            "/Hosting/Vultr/Atlanta",
+            "/Hosting/Vultr/Miami",
+            "/Hosting/Vultr/Tokyo",
+            "/Hosting/Vultr/Dallas",
+            "/Hosting/Vultr/Seattle",
+            "/Hosting/Vultr/Silicon-Valley",
+            "/Hosting/Vultr/Los-Angeles",
+            "/Hosting/Vultr/Sydney"
+          ]
+        }
+      ]
+    }
+  ]
 }
