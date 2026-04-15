@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "npm -w @smokepingconf/web run dev",
-    "build": "npm -w @smokepingconf/web run build",
+    "build": "npm --workspaces --if-present run build",
     "preview": "npm -w @smokepingconf/web run preview",
     "check": "npm --workspaces --if-present run check",
     "test": "npm --workspaces --if-present run test",
