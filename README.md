@@ -83,9 +83,9 @@ The workflow sets `BASE_PATH=/<repo-name>` so SvelteKit emits hashed assets unde
 
 To enable Pages: in your repository settings, set Pages → Source to **GitHub Actions**.
 
-## Updating the curated catalogue
+## Contributing
 
-Edit `config.txt` at the repo root. The next `npm run build` (or `npm run prebuild`) regenerates `src/lib/catalog.json`. CI runs the build, so a stale committed catalog will be regenerated on deploy regardless.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add curated targets, new probe kinds, defaults, or translations. Short version: edit `config.txt` and `npm run build` regenerates `src/lib/catalog.json`.
 
 ## License
 
