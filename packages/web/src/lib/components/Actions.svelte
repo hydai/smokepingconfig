@@ -1,9 +1,13 @@
 <script lang="ts">
   import { t } from 'svelte-i18n';
 
-  import { serializeCatalog } from '@smokepingconf/core';
-  import { resetTree, tree } from '$lib/store.js';
-  import { buildShareUrl, MAX_URL_LENGTH, writeHashState } from '$lib/url-state.js';
+  import {
+    MAX_URL_LENGTH,
+    buildShareUrl,
+    serializeCatalog,
+    writeHashState
+  } from '@smokepingconf/core';
+  import { baseCatalog, resetTree, tree } from '$lib/store.js';
 
   const text = $derived(serializeCatalog($tree));
 
@@ -15,7 +19,7 @@
   let copyTimer: ReturnType<typeof setTimeout> | undefined;
   let shareTimer: ReturnType<typeof setTimeout> | undefined;
 
-  const shareInfo = $derived(buildShareUrl($tree));
+  const shareInfo = $derived(buildShareUrl($tree, baseCatalog));
 
   async function copy() {
     try {
@@ -39,7 +43,7 @@
       flashShare('toolong');
       return;
     }
-    writeHashState($tree);
+    writeHashState($tree, baseCatalog);
     try {
       await navigator.clipboard.writeText(shareInfo.url);
       flashShare('copied');

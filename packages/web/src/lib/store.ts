@@ -1,26 +1,47 @@
 // Reactive WorkingTree store.
 //
 // Hydration precedence (browser only):
-//   1. URL hash (#s=...)   — populated by url-state.ts in Step 9
-//   2. localStorage          — persisted from the previous session
+//   1. URL hash (#s=...)   — populated by routes/+layout.svelte via url-state
+//   2. localStorage         — persisted from the previous session
 //   3. Fresh curated catalog — built-in fallback
 //
 // Saves to localStorage on change, debounced by PERSIST_DEBOUNCE_MS.
 // Works in Node for unit tests (persistence is a no-op without `window`).
+//
+// Pure helpers (findNode, walkNodes, freshTree) now live in @smokepingconf/core
+// and are re-exported here for the Svelte components and tests that still
+// import them via $lib/store.
 
 import { get, writable, type Writable } from 'svelte/store';
 
 import catalogData from '@smokepingconf/core/catalog.json';
-import type { Catalog, Language, Node, WorkingTree } from '@smokepingconf/core';
+import {
+  findNode,
+  freshTree as coreFreshTree,
+  idToPath,
+  walkNodes,
+  type Catalog,
+  type Language,
+  type Node,
+  type WorkingTree
+} from '@smokepingconf/core';
+
+export { findNode, walkNodes };
+
+// The base catalogue used by every WorkingTree hydration in the web app.
+// Kept as a separate const so tests and consumers can reference it too.
+export const baseCatalog = catalogData as Catalog;
+
+// Web-side convenience wrapper: pins the bundled catalogue as the base so
+// existing call sites (`freshTree()`, `freshTree('zh-TW')`) keep working.
+export function freshTree(language: Language = 'en'): WorkingTree {
+  return coreFreshTree(baseCatalog, language);
+}
 
 export const STORAGE_KEY = 'smokepingconf:v1:state';
 export const PERSIST_DEBOUNCE_MS = 200;
 
 const isBrowser = typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-
-export function freshTree(language: Language = 'en'): WorkingTree {
-  return structuredClone({ ...(catalogData as Catalog), language });
-}
 
 export function loadFromStorage(): WorkingTree | null {
   if (!isBrowser) return null;
@@ -111,23 +132,7 @@ export function mutateNode(id: string, mutator: (node: Node) => void): void {
   });
 }
 
-// --- Pure helpers (exported for tests and later use) ------------------------
-
-export function findNode(nodes: Node[], id: string): Node | null {
-  for (const n of nodes) {
-    if (n.id === id) return n;
-    const hit = findNode(n.children, id);
-    if (hit) return hit;
-  }
-  return null;
-}
-
-export function walkNodes(nodes: Node[], visit: (node: Node) => void): void {
-  for (const n of nodes) {
-    visit(n);
-    walkNodes(n.children, visit);
-  }
-}
+// --- Pure helpers (remain here because they're only called by web UI) -------
 
 // Remove a node anywhere in the tree. Returns true if removed.
 export function removeNode(nodes: Node[], id: string): boolean {
@@ -201,21 +206,6 @@ export function newCustomTarget(): Node {
   };
 }
 
-// Compute the absolute SmokePing path (e.g. "/CDN/Cloudflare") for a node by id.
-// Returns null if the node is not in the tree.
-export function pathOf(nodes: Node[], id: string): string | null {
-  function walk(arr: Node[], prefix: string): string | null {
-    for (const n of arr) {
-      const path = `${prefix}/${n.name}`;
-      if (n.id === id) return path;
-      const sub = walk(n.children, path);
-      if (sub) return sub;
-    }
-    return null;
-  }
-  return walk(nodes, '');
-}
-
 // List every descendant leaf (target) under a given node id, returning
 // { id, path, menu } triples. Useful for the comparison-graph picker.
 export function listDescendants(
@@ -224,9 +214,9 @@ export function listDescendants(
 ): { id: string; path: string; menu: string }[] {
   const root = findNode(nodes, id);
   if (!root) return [];
-  const out: { id: string; path: string; menu: string }[] = [];
-  const rootPath = pathOf(nodes, id);
+  const rootPath = idToPath(nodes, id);
   if (rootPath === null) return [];
+  const out: { id: string; path: string; menu: string }[] = [];
   function walk(n: Node, prefix: string): void {
     for (const c of n.children) {
       const p = `${prefix}/${c.name}`;
