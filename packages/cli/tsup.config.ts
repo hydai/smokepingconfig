@@ -17,8 +17,12 @@ export default defineConfig({
   // Inline @smokepingconf/core (and its catalog.json import) so the CLI
   // tarball is self-contained — otherwise Node ESM would need `with
   // { type: 'json' }` attributes at runtime, which tsup doesn't synthesize
-  // for external imports.
-  noExternal: ['@smokepingconf/core'],
+  // for external imports. lz-string is a tiny CJS module whose named
+  // exports only survive the esbuild CJS→ESM interop, so bundle it too.
+  // yaml@2 is left external (its transitive `require('process')` trips up
+  // tsup's ESM __require shim) — installed alongside the CLI.
+  noExternal: ['@smokepingconf/core', 'lz-string'],
+  external: ['yaml'],
   // Prepend a shebang so `chmod +x dist/index.js` isn't needed — npm sets
   // the executable bit automatically when installing a package with a `bin`
   // field, and Node's loader skips the first line when the file is invoked
