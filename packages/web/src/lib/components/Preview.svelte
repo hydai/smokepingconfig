@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from 'svelte-i18n';
 
-  import { serializeCatalog } from '$lib/serializer.js';
+  import { serializeCatalog } from '@smokepingconf/core';
   import { tree } from '$lib/store.js';
 
   const text = $derived(serializeCatalog($tree));

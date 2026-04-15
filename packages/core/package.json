@@ -1,0 +1,19 @@
+{
+  "name": "@smokepingconf/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog.json": "./src/catalog.json"
+  },
+  "scripts": {
+    "prebuild": "tsx scripts/parse-config.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "tslib": "^2.8.1"
+  }
+}

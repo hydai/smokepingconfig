@@ -2,7 +2,7 @@
   import { locale, t } from 'svelte-i18n';
 
   import { setLanguage, tree } from '$lib/store.js';
-  import type { Language } from '$lib/types.js';
+  import type { Language } from '@smokepingconf/core';
 
   const choices: { value: Language; label: string }[] = [
     { value: 'en', label: 'EN' },

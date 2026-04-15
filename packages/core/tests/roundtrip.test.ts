@@ -3,11 +3,11 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-import { parseTargets } from '../../src/lib/parser.js';
-import { serializeCatalog } from '../../src/lib/serializer.js';
+import { parseTargets } from '../src/parser.js';
+import { serializeCatalog } from '../src/serializer.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const configPath = resolve(here, '../../config.txt');
+const configPath = resolve(here, '../../../config.txt');
 const configText = readFileSync(configPath, 'utf8');
 
 describe('parse ↔ serialize round-trip', () => {

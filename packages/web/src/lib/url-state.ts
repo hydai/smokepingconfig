@@ -11,8 +11,8 @@
 
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
-import catalogData from './catalog.json';
-import type { Catalog, Language, Node, Probe, RootMeta, WorkingTree } from './types.js';
+import catalogData from '@smokepingconf/core/catalog.json';
+import type { Catalog, Language, Node, Probe, RootMeta, WorkingTree } from '@smokepingconf/core';
 import { findNode, freshTree } from './store.js';
 
 const CATALOG = catalogData as Catalog;

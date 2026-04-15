@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseTargets } from '../../src/lib/parser.js';
-import { serializeCatalog } from '../../src/lib/serializer.js';
-import type { Catalog } from '../../src/lib/types.js';
+import { parseTargets } from '../src/parser.js';
+import { serializeCatalog } from '../src/serializer.js';
+import type { Catalog } from '../src/types.js';
 
 describe('serializeCatalog', () => {
   it('emits the *** Targets *** header and root attributes', () => {

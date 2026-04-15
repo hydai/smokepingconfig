@@ -2,7 +2,7 @@
   import { dndzone, type DndEvent } from 'svelte-dnd-action';
   import { t } from 'svelte-i18n';
 
-  import type { Node } from '$lib/types.js';
+  import type { Node } from '@smokepingconf/core';
   import {
     addChild,
     newCustomCategory,

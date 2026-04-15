@@ -3,7 +3,7 @@
   import { t } from 'svelte-i18n';
 
   import { addTopLevel, newCustomCategory, reorderSiblings, tree } from '$lib/store.js';
-  import type { Node } from '$lib/types.js';
+  import type { Node } from '@smokepingconf/core';
   import AddButton from './AddButton.svelte';
   import TreeNode from './TreeNode.svelte';
 

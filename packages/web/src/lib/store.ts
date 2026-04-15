@@ -10,8 +10,8 @@
 
 import { get, writable, type Writable } from 'svelte/store';
 
-import catalogData from './catalog.json';
-import type { Catalog, Language, Node, WorkingTree } from './types.js';
+import catalogData from '@smokepingconf/core/catalog.json';
+import type { Catalog, Language, Node, WorkingTree } from '@smokepingconf/core';
 
 export const STORAGE_KEY = 'smokepingconf:v1:state';
 export const PERSIST_DEBOUNCE_MS = 200;

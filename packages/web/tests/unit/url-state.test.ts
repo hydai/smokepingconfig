@@ -7,7 +7,7 @@ import {
   decodeTree,
   encodeTree
 } from '../../src/lib/url-state.js';
-import type { Node, WorkingTree } from '../../src/lib/types.js';
+import type { Node, WorkingTree } from '@smokepingconf/core';
 
 function withCustom(t: WorkingTree, parentId: string | null, custom: Node): WorkingTree {
   if (parentId === null) {

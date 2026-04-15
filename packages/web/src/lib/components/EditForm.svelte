@@ -1,14 +1,14 @@
 <script lang="ts">
   import { t } from 'svelte-i18n';
 
-  import type { Node, ProbeKind } from '$lib/types.js';
+  import type { Node, ProbeKind } from '@smokepingconf/core';
   import { listDescendants, mutateNode, removeNode, tree } from '$lib/store.js';
   import {
     PROBE_KINDS,
     PROBE_META,
     fieldsToProbe,
     probeToFields
-  } from '$lib/probes.js';
+  } from '@smokepingconf/core';
 
   let { node, onClose }: { node: Node; onClose: () => void } = $props();
 

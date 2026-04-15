@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from 'svelte-i18n';
 
-  import { collectUsedProbes, probesFileSnippet } from '$lib/probes.js';
+  import { collectUsedProbes, probesFileSnippet } from '@smokepingconf/core';
   import { tree } from '$lib/store.js';
 
   const used = $derived(collectUsedProbes($tree.nodes, $tree.root.probe));

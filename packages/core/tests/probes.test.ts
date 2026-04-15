@@ -6,8 +6,8 @@ import {
   fieldsToProbe,
   probeToFields,
   probesFileSnippet
-} from '../../src/lib/probes.js';
-import type { Node } from '../../src/lib/types.js';
+} from '../src/probes.js';
+import type { Node } from '../src/types.js';
 
 function leaf(partial: Partial<Node> & { id: string; name: string }): Node {
   return {
