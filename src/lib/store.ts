@@ -163,3 +163,67 @@ export function addChild(parentId: string, node: Node): void {
     return t;
   });
 }
+
+export function newCustomCategory(): Node {
+  return {
+    id: `x:${crypto.randomUUID()}`,
+    source: 'custom',
+    type: 'category',
+    name: 'NewCategory',
+    menu: 'New category',
+    title: 'New category',
+    included: true,
+    children: []
+  };
+}
+
+export function newCustomTarget(): Node {
+  return {
+    id: `x:${crypto.randomUUID()}`,
+    source: 'custom',
+    type: 'target',
+    name: 'NewTarget',
+    menu: 'New target',
+    title: 'New target',
+    included: true,
+    children: [],
+    host: ''
+  };
+}
+
+// Compute the absolute SmokePing path (e.g. "/CDN/Cloudflare") for a node by id.
+// Returns null if the node is not in the tree.
+export function pathOf(nodes: Node[], id: string): string | null {
+  function walk(arr: Node[], prefix: string): string | null {
+    for (const n of arr) {
+      const path = `${prefix}/${n.name}`;
+      if (n.id === id) return path;
+      const sub = walk(n.children, path);
+      if (sub) return sub;
+    }
+    return null;
+  }
+  return walk(nodes, '');
+}
+
+// List every descendant leaf (target) under a given node id, returning
+// { id, path, menu } triples. Useful for the comparison-graph picker.
+export function listDescendants(
+  nodes: Node[],
+  id: string
+): { id: string; path: string; menu: string }[] {
+  const root = findNode(nodes, id);
+  if (!root) return [];
+  const out: { id: string; path: string; menu: string }[] = [];
+  const rootPath = pathOf(nodes, id);
+  if (rootPath === null) return [];
+  function walk(n: Node, prefix: string): void {
+    for (const c of n.children) {
+      const p = `${prefix}/${c.name}`;
+      out.push({ id: c.id, path: p, menu: c.menu });
+      walk(c, p);
+    }
+  }
+  walk(root, rootPath);
+  return out;
+}

@@ -2,7 +2,7 @@
   import { t } from 'svelte-i18n';
 
   import type { Node, ProbeKind } from '$lib/types.js';
-  import { mutateNode, removeNode, tree } from '$lib/store.js';
+  import { listDescendants, mutateNode, removeNode, tree } from '$lib/store.js';
   import {
     PROBE_KINDS,
     PROBE_META,
@@ -24,6 +24,20 @@
   let probeKind = $state<'' | ProbeKind>(node.probe?.kind ?? '');
   // svelte-ignore state_referenced_locally
   let probeFields = $state<Record<string, string>>(probeToFields(node.probe));
+  // svelte-ignore state_referenced_locally
+  let comparisonPaths = $state<string[]>(node.comparisonChildren ? [...node.comparisonChildren] : []);
+
+  const descendants = $derived(
+    node.type === 'category' ? listDescendants($tree.nodes, node.id) : []
+  );
+
+  function togglePath(path: string, on: boolean) {
+    if (on) {
+      if (!comparisonPaths.includes(path)) comparisonPaths = [...comparisonPaths, path];
+    } else {
+      comparisonPaths = comparisonPaths.filter((p) => p !== path);
+    }
+  }
 
   const currentMeta = $derived(probeKind ? PROBE_META[probeKind] : null);
 
@@ -39,6 +53,13 @@
       const probe = fieldsToProbe(probeKind, probeFields);
       if (probe) n.probe = probe;
       else delete n.probe;
+      if (n.type === 'category') {
+        if (comparisonPaths.length > 0) {
+          n.comparisonChildren = [...comparisonPaths];
+        } else {
+          delete n.comparisonChildren;
+        }
+      }
     });
     onClose();
   }
@@ -120,6 +141,25 @@
       {/each}
     {/if}
   </div>
+
+  {#if node.type === 'category' && descendants.length > 0}
+    <fieldset class="comparison">
+      <legend>Comparison graph <em>({comparisonPaths.length}/{descendants.length} selected)</em></legend>
+      <div class="comparison-list">
+        {#each descendants as d (d.id)}
+          <label class="comp-item">
+            <input
+              type="checkbox"
+              checked={comparisonPaths.includes(d.path)}
+              onchange={(e) => togglePath(d.path, (e.currentTarget as HTMLInputElement).checked)}
+            />
+            <span class="comp-menu">{d.menu}</span>
+            <span class="comp-path">{d.path}</span>
+          </label>
+        {/each}
+      </div>
+    </fieldset>
+  {/if}
 
   <div class="actions">
     <button type="submit" class="primary">{$t('edit.save')}</button>
@@ -208,5 +248,43 @@
   }
   .actions button:hover:not(.primary) {
     background: color-mix(in srgb, currentColor 6%, transparent);
+  }
+  .comparison {
+    margin-top: 0.75rem;
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem 0.25rem;
+  }
+  .comparison legend {
+    font-size: 0.75rem;
+    opacity: 0.75;
+    padding: 0 0.25rem;
+  }
+  .comparison legend em {
+    font-style: normal;
+    opacity: 0.7;
+  }
+  .comparison-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    max-height: 18rem;
+    overflow: auto;
+    padding: 0.25rem 0;
+  }
+  .comp-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    cursor: pointer;
+    font-size: 0.8125rem;
+  }
+  .comp-menu {
+    font-weight: 500;
+  }
+  .comp-path {
+    font-family: var(--font-mono);
+    opacity: 0.55;
+    font-size: 0.75rem;
   }
 </style>

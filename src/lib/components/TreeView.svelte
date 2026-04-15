@@ -1,8 +1,10 @@
 <script lang="ts">
   import { dndzone, type DndEvent } from 'svelte-dnd-action';
+  import { t } from 'svelte-i18n';
 
-  import { reorderSiblings, tree } from '$lib/store.js';
+  import { addTopLevel, newCustomCategory, reorderSiblings, tree } from '$lib/store.js';
   import type { Node } from '$lib/types.js';
+  import AddButton from './AddButton.svelte';
   import TreeNode from './TreeNode.svelte';
 
   const flipDurationMs = 180;
@@ -27,6 +29,10 @@
       items.map((n) => n.id)
     );
   }
+
+  function addCategory() {
+    addTopLevel(newCustomCategory());
+  }
 </script>
 
 <div
@@ -43,11 +49,18 @@
   {/each}
 </div>
 
+<div class="add-wrap">
+  <AddButton onclick={addCategory} label={$t('tree.addCategory')} />
+</div>
+
 <style>
   .tree {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
     font-size: 0.9375rem;
+  }
+  .add-wrap {
+    margin-top: 0.75rem;
   }
 </style>

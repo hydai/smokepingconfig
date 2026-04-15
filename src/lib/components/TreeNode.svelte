@@ -1,8 +1,16 @@
 <script lang="ts">
   import { dndzone, type DndEvent } from 'svelte-dnd-action';
   import { t } from 'svelte-i18n';
+
   import type { Node } from '$lib/types.js';
-  import { reorderSiblings, setIncluded } from '$lib/store.js';
+  import {
+    addChild,
+    newCustomCategory,
+    newCustomTarget,
+    reorderSiblings,
+    setIncluded
+  } from '$lib/store.js';
+  import AddButton from './AddButton.svelte';
   import EditForm from './EditForm.svelte';
   import Self from './TreeNode.svelte';
 
@@ -58,6 +66,16 @@
   function toggleEdit() {
     editing = !editing;
   }
+
+  function addSubCategory() {
+    addChild(node.id, newCustomCategory());
+    expanded = true;
+  }
+
+  function addSubTarget() {
+    addChild(node.id, newCustomTarget());
+    expanded = true;
+  }
 </script>
 
 <div class="row" style:--depth={depth}>
@@ -109,25 +127,33 @@
   </div>
 {/if}
 
-{#if expanded && node.children.length > 0}
-  <div
-    class="children"
-    role="group"
-    use:dndzone={{
-      items: childItems,
-      flipDurationMs: 180,
-      type: `p:${node.id}`,
-      dropTargetStyle: {}
-    }}
-    onconsider={handleChildConsider}
-    onfinalize={handleChildFinalize}
-  >
-    {#each childItems as child (child.id)}
-      <div>
-        <Self node={child} depth={depth + 1} />
-      </div>
-    {/each}
-  </div>
+{#if expanded}
+  {#if node.children.length > 0}
+    <div
+      class="children"
+      role="group"
+      use:dndzone={{
+        items: childItems,
+        flipDurationMs: 180,
+        type: `p:${node.id}`,
+        dropTargetStyle: {}
+      }}
+      onconsider={handleChildConsider}
+      onfinalize={handleChildFinalize}
+    >
+      {#each childItems as child (child.id)}
+        <div>
+          <Self node={child} depth={depth + 1} />
+        </div>
+      {/each}
+    </div>
+  {/if}
+  {#if node.type === 'category'}
+    <div class="add-children" style:--depth={depth + 1}>
+      <AddButton onclick={addSubTarget} label={$t('tree.addTarget')} />
+      <AddButton onclick={addSubCategory} label={$t('tree.addCategory')} />
+    </div>
+  {/if}
 {/if}
 
 <style>
@@ -218,5 +244,11 @@
   .edit:hover {
     background: color-mix(in srgb, currentColor 12%, transparent);
     opacity: 1;
+  }
+  .add-children {
+    display: flex;
+    gap: 0.4rem;
+    padding-left: calc(var(--depth) * 1rem + 1.25rem);
+    margin: 0.25rem 0 0.5rem;
   }
 </style>
