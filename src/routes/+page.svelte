@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Preview from '$lib/components/Preview.svelte';
   import TreeView from '$lib/components/TreeView.svelte';
 </script>
 
@@ -17,7 +18,7 @@
     </section>
     <section class="pane preview-pane" aria-label="Generated config">
       <h2>Preview</h2>
-      <p class="placeholder">Live preview arrives in Step 7.</p>
+      <Preview />
     </section>
   </main>
 </div>
@@ -74,10 +75,6 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     opacity: 0.6;
-  }
-  .placeholder {
-    font-style: italic;
-    opacity: 0.5;
   }
   @media (max-width: 768px) {
     .layout {
