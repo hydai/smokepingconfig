@@ -1,0 +1,49 @@
+name: Release CLI
+
+on:
+  push:
+    tags:
+      - 'cli-v*'
+
+# The workflow only touches the CLI package — web and core are unaffected
+# and keep their own deployment / release cadence.
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed for `npm publish --provenance` to mint a signed attestation
+      # via GitHub's OIDC token. Without this the publish still succeeds
+      # but without provenance metadata.
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify tag matches package version
+        env:
+          TAG_REF: ${{ github.ref_name }}
+        run: |
+          TAG_VERSION="${TAG_REF#cli-v}"
+          PKG_VERSION=$(node -p "require('./packages/cli/package.json').version")
+          echo "tag=$TAG_VERSION pkg=$PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag $TAG_REF ($TAG_VERSION) does not match packages/cli/package.json ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Gate on CLI tests
+        run: npm -w @smokepingconf/cli run test
+
+      - name: Publish to npm with provenance
+        run: npm -w @smokepingconf/cli publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

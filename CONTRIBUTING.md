@@ -193,6 +193,28 @@ When adding a command:
    + stderr. Use `encodePatch` + `patchToYaml` to generate fixture
    patches pinned to the bundled catalog's current `{date, sha}`.
 
+### Releasing the CLI
+
+`@smokepingconf/core` is a devDependency of `@smokepingconf/cli`; it is
+inlined into the tsup bundle and never resolved from the public registry
+at install time, so only the CLI needs publishing. The
+`.github/workflows/release-cli.yml` workflow fires on tags matching
+`cli-v*` and runs `npm publish --access public --provenance` with the
+`NPM_TOKEN` repo secret.
+
+To cut a release:
+
+```sh
+# Bump in a commit of its own so the tag points at a clean version bump.
+npm -w @smokepingconf/cli version patch   # or minor / major
+git push origin master
+git push origin cli-v$(node -p "require('./packages/cli/package.json').version")
+```
+
+The workflow verifies the tag matches `packages/cli/package.json` before
+publishing, reruns the CLI test suite as a last-mile gate, and publishes
+with [npm provenance](https://docs.npmjs.com/generating-provenance-statements).
+
 ## Feature ideas
 
 PRs welcome for these — open an issue first if they're non-trivial.
