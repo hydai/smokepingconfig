@@ -1,5 +1,6 @@
 <script lang="ts">
   import { dndzone, type DndEvent } from 'svelte-dnd-action';
+  import { t } from 'svelte-i18n';
   import type { Node } from '$lib/types.js';
   import { reorderSiblings, setIncluded } from '$lib/store.js';
   import EditForm from './EditForm.svelte';
@@ -65,7 +66,7 @@
       type="button"
       class="chevron"
       onclick={toggleExpanded}
-      aria-label={expanded ? 'Collapse' : 'Expand'}
+      aria-label={expanded ? $t('tree.collapse') : $t('tree.expand')}
       aria-expanded={expanded}
     >
       {expanded ? '▾' : '▸'}
@@ -79,7 +80,7 @@
       type="checkbox"
       checked={node.included}
       onchange={toggleIncluded}
-      aria-label={`Include ${node.menu}`}
+      aria-label={$t('tree.includeNode', { values: { name: node.menu } })}
     />
     <span class="name">{node.menu}</span>
     {#if isCategory}
@@ -93,7 +94,9 @@
     type="button"
     class="edit"
     onclick={toggleEdit}
-    aria-label={editing ? `Close editor for ${node.menu}` : `Edit ${node.menu}`}
+    aria-label={editing
+      ? $t('tree.editClose', { values: { name: node.menu } })
+      : $t('tree.editOpen', { values: { name: node.menu } })}
     aria-pressed={editing}
   >
     ✎

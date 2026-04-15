@@ -1,0 +1,67 @@
+{
+  "app": {
+    "title": "SmokePing 設定產生器",
+    "subtitle": "選擇監測目標，即時預覽 {file} 檔，複製或下載。"
+  },
+  "panes": {
+    "targets": "監測目標",
+    "preview": "預覽"
+  },
+  "actions": {
+    "copy": "複製",
+    "copied": "✓ 已複製",
+    "copyFailed": "✗ 複製失敗",
+    "download": "下載",
+    "share": "分享",
+    "shareCopied": "✓ 網址已複製",
+    "shareTooLong": "網址過長",
+    "shareFailed": "✗ 分享失敗",
+    "shareTitleOk": "分享網址（共 {length} 字元）",
+    "shareTitleTooLong": "網址過長（{length} > {max}）。請改用下載。",
+    "reset": "重設",
+    "resetConfirm": "捨棄所有修改並還原為預設目錄？"
+  },
+  "stats": {
+    "lines": "{count} 行",
+    "bytes": "{count} 位元組"
+  },
+  "tree": {
+    "expand": "展開",
+    "collapse": "收合",
+    "includeNode": "啟用 {name}",
+    "editOpen": "編輯 {name}",
+    "editClose": "關閉 {name} 編輯器",
+    "addCategory": "新增分類",
+    "addTarget": "新增目標"
+  },
+  "edit": {
+    "name": "名稱",
+    "nameHint": "路徑片段",
+    "menu": "選單",
+    "title": "標題",
+    "host": "主機",
+    "hostPlaceholder": "example.com 或 1.2.3.4",
+    "probe": "探測器",
+    "probeInherit": "繼承父層",
+    "probeOverrideHint": "覆寫父層繼承",
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "deleteConfirm": "刪除「{name}」？",
+    "lookup": "查詢對象",
+    "recordType": "記錄類型",
+    "url": "網址",
+    "port": "連接埠"
+  },
+  "probes": {
+    "noticeTitle": "探測器前置需求",
+    "noticeBody": "您的 SmokePing 需要這些探測器定義，產生的 Targets 檔才能正確運作。",
+    "noticeShow": "顯示 Probes 片段",
+    "noticeHide": "隱藏 Probes 片段"
+  },
+  "language": {
+    "label": "語言",
+    "english": "English",
+    "chineseTW": "繁體中文"
+  }
+}

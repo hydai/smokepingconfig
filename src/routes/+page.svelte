@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { t } from 'svelte-i18n';
+
   import Actions from '$lib/components/Actions.svelte';
+  import LangToggle from '$lib/components/LangToggle.svelte';
   import Preview from '$lib/components/Preview.svelte';
   import TreeView from '$lib/components/TreeView.svelte';
 </script>
@@ -7,19 +10,22 @@
 <div class="app">
   <header>
     <div class="title">
-      <h1>SmokePing Config Builder</h1>
-      <p class="sub">Pick targets, preview the <code>Targets</code> file, copy or download.</p>
+      <h1>{$t('app.title')}</h1>
+      <p class="sub">
+        {@html $t('app.subtitle', { values: { file: '<code>Targets</code>' } })}
+      </p>
     </div>
+    <LangToggle />
   </header>
 
   <main class="layout">
-    <section class="pane tree-pane" aria-label="Targets tree">
-      <h2>Targets</h2>
+    <section class="pane tree-pane">
+      <h2>{$t('panes.targets')}</h2>
       <TreeView />
     </section>
-    <section class="pane preview-pane" aria-label="Generated config">
+    <section class="pane preview-pane">
       <div class="pane-header">
-        <h2>Preview</h2>
+        <h2>{$t('panes.preview')}</h2>
         <Actions />
       </div>
       <Preview />
@@ -51,7 +57,7 @@
     font-size: 0.8125rem;
     opacity: 0.6;
   }
-  code {
+  .sub :global(code) {
     font-family: var(--font-mono);
     font-size: 0.9em;
     padding: 0.05em 0.25em;

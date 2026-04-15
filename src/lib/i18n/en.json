@@ -1,0 +1,67 @@
+{
+  "app": {
+    "title": "SmokePing Config Builder",
+    "subtitle": "Pick targets, preview the {file} file, copy or download."
+  },
+  "panes": {
+    "targets": "Targets",
+    "preview": "Preview"
+  },
+  "actions": {
+    "copy": "Copy",
+    "copied": "✓ Copied",
+    "copyFailed": "✗ Failed",
+    "download": "Download",
+    "share": "Share",
+    "shareCopied": "✓ URL copied",
+    "shareTooLong": "URL too long",
+    "shareFailed": "✗ Failed",
+    "shareTitleOk": "Share URL ({length} chars)",
+    "shareTitleTooLong": "URL too long ({length} > {max}). Use Download instead.",
+    "reset": "Reset",
+    "resetConfirm": "Reset all edits and start from the curated catalog?"
+  },
+  "stats": {
+    "lines": "{count} {count, plural, one {line} other {lines}}",
+    "bytes": "{count} {count, plural, one {byte} other {bytes}}"
+  },
+  "tree": {
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "includeNode": "Include {name}",
+    "editOpen": "Edit {name}",
+    "editClose": "Close editor for {name}",
+    "addCategory": "Add category",
+    "addTarget": "Add target"
+  },
+  "edit": {
+    "name": "Name",
+    "nameHint": "path segment",
+    "menu": "Menu",
+    "title": "Title",
+    "host": "Host",
+    "hostPlaceholder": "example.com or 1.2.3.4",
+    "probe": "Probe",
+    "probeInherit": "inherit",
+    "probeOverrideHint": "overrides inheritance",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteConfirm": "Delete \"{name}\"?",
+    "lookup": "Lookup",
+    "recordType": "Record type",
+    "url": "URL",
+    "port": "Port"
+  },
+  "probes": {
+    "noticeTitle": "Probes prerequisite",
+    "noticeBody": "Your SmokePing install needs these probe definitions before it can use the generated Targets.",
+    "noticeShow": "Show Probes snippet",
+    "noticeHide": "Hide Probes snippet"
+  },
+  "language": {
+    "label": "Language",
+    "english": "English",
+    "chineseTW": "繁體中文"
+  }
+}

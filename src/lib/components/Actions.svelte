@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { t } from 'svelte-i18n';
+
   import { serializeCatalog } from '$lib/serializer.js';
   import { resetTree, tree } from '$lib/store.js';
-  import { buildShareUrl, writeHashState } from '$lib/url-state.js';
+  import { buildShareUrl, MAX_URL_LENGTH, writeHashState } from '$lib/url-state.js';
 
   const text = $derived(serializeCatalog($tree));
 
@@ -67,7 +69,7 @@
   }
 
   function reset() {
-    if (window.confirm('Reset all edits and start from the curated catalog?')) {
+    if (window.confirm($t('actions.resetConfirm'))) {
       resetTree();
     }
   }
@@ -76,34 +78,36 @@
 <div class="actions" role="toolbar" aria-label="Output actions">
   <button type="button" onclick={copy} aria-live="polite" data-state={copyState}>
     {#if copyState === 'copied'}
-      ✓ Copied
+      {$t('actions.copied')}
     {:else if copyState === 'failed'}
-      ✗ Failed
+      {$t('actions.copyFailed')}
     {:else}
-      Copy
+      {$t('actions.copy')}
     {/if}
   </button>
-  <button type="button" onclick={download}>Download</button>
+  <button type="button" onclick={download}>{$t('actions.download')}</button>
   <button
     type="button"
     onclick={share}
     data-state={shareState}
     title={shareInfo.ok
-      ? `Share URL (${shareInfo.length} chars)`
-      : `URL too long (${shareInfo.length} > 6000). Use Download instead.`}
+      ? $t('actions.shareTitleOk', { values: { length: shareInfo.length } })
+      : $t('actions.shareTitleTooLong', {
+          values: { length: shareInfo.length, max: MAX_URL_LENGTH }
+        })}
     disabled={!shareInfo.ok && shareState === 'idle'}
   >
     {#if shareState === 'copied'}
-      ✓ URL copied
+      {$t('actions.shareCopied')}
     {:else if shareState === 'toolong'}
-      URL too long
+      {$t('actions.shareTooLong')}
     {:else if shareState === 'failed'}
-      ✗ Failed
+      {$t('actions.shareFailed')}
     {:else}
-      Share
+      {$t('actions.share')}
     {/if}
   </button>
-  <button type="button" class="ghost" onclick={reset}>Reset</button>
+  <button type="button" class="ghost" onclick={reset}>{$t('actions.reset')}</button>
 </div>
 
 <style>

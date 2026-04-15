@@ -1,23 +1,21 @@
 <script lang="ts">
+  import { t } from 'svelte-i18n';
+
   import { serializeCatalog } from '$lib/serializer.js';
   import { tree } from '$lib/store.js';
 
   const text = $derived(serializeCatalog($tree));
   const bytes = $derived(new TextEncoder().encode(text).length);
   const lineCount = $derived(text.split('\n').length);
-
-  function fmt(n: number): string {
-    return n.toLocaleString();
-  }
 </script>
 
 <div class="preview">
   <header class="stats">
-    <span>{fmt(lineCount)} lines</span>
+    <span>{$t('stats.lines', { values: { count: lineCount } })}</span>
     <span aria-hidden="true">·</span>
-    <span>{fmt(bytes)} bytes</span>
+    <span>{$t('stats.bytes', { values: { count: bytes } })}</span>
   </header>
-  <pre class="output" aria-label="Generated SmokePing Targets file"><code>{text}</code></pre>
+  <pre class="output"><code>{text}</code></pre>
 </div>
 
 <style>

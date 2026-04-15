@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { t } from 'svelte-i18n';
+
   import type { Node, ProbeKind } from '$lib/types.js';
   import { mutateNode, removeNode, tree } from '$lib/store.js';
   import {
@@ -43,39 +45,54 @@
 
   function del() {
     if (node.source !== 'custom') return;
-    if (!window.confirm(`Delete "${node.menu}"?`)) return;
-    tree.update((t) => {
-      removeNode(t.nodes, node.id);
-      return t;
+    if (!window.confirm($t('edit.deleteConfirm', { values: { name: node.menu } }))) return;
+    tree.update((state) => {
+      removeNode(state.nodes, node.id);
+      return state;
     });
     onClose();
+  }
+
+  function fieldLabel(key: string): string {
+    switch (key) {
+      case 'lookup':
+        return $t('edit.lookup');
+      case 'recordType':
+        return $t('edit.recordType');
+      case 'url':
+        return $t('edit.url');
+      case 'pingport':
+        return $t('edit.port');
+      default:
+        return key;
+    }
   }
 </script>
 
 <form class="edit-form" onsubmit={save}>
   <div class="grid">
     <label>
-      <span>Name <em>path-segment</em></span>
+      <span>{$t('edit.name')} <em>{$t('edit.nameHint')}</em></span>
       <input bind:value={name} required pattern="[^/\s]+" />
     </label>
     <label>
-      <span>Menu</span>
+      <span>{$t('edit.menu')}</span>
       <input bind:value={menu} />
     </label>
     <label class="full">
-      <span>Title</span>
+      <span>{$t('edit.title')}</span>
       <input bind:value={title} />
     </label>
     {#if node.type === 'target'}
       <label class="full">
-        <span>Host</span>
-        <input bind:value={host} placeholder="example.com or 1.2.3.4" />
+        <span>{$t('edit.host')}</span>
+        <input bind:value={host} placeholder={$t('edit.hostPlaceholder')} />
       </label>
     {/if}
     <label>
-      <span>Probe {node.type === 'category' ? '(overrides inheritance)' : ''}</span>
+      <span>{$t('edit.probe')} {node.type === 'category' ? `(${$t('edit.probeOverrideHint')})` : ''}</span>
       <select bind:value={probeKind}>
-        <option value="">inherit</option>
+        <option value="">{$t('edit.probeInherit')}</option>
         {#each PROBE_KINDS as k (k)}
           <option value={k}>{PROBE_META[k].label}</option>
         {/each}
@@ -84,7 +101,7 @@
     {#if currentMeta}
       {#each currentMeta.fields as field (field.key)}
         <label>
-          <span>{field.label}</span>
+          <span>{fieldLabel(field.key)}</span>
           {#if field.type === 'select'}
             <select bind:value={probeFields[field.key]}>
               {#each field.options ?? [] as opt (opt.value)}
@@ -105,10 +122,10 @@
   </div>
 
   <div class="actions">
-    <button type="submit" class="primary">Save</button>
-    <button type="button" onclick={onClose}>Cancel</button>
+    <button type="submit" class="primary">{$t('edit.save')}</button>
+    <button type="button" onclick={onClose}>{$t('edit.cancel')}</button>
     {#if node.source === 'custom'}
-      <button type="button" class="danger" onclick={del}>Delete</button>
+      <button type="button" class="danger" onclick={del}>{$t('edit.delete')}</button>
     {/if}
   </div>
 </form>
