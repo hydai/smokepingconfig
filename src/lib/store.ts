@@ -130,3 +130,36 @@ export function removeNode(nodes: Node[], id: string): boolean {
   }
   return false;
 }
+
+// Reorder siblings under a given parent (null = top-level) by the given id list.
+// Any ids in the list but not in the children are ignored; any children not in
+// the list keep their relative order after the listed ones.
+export function reorderSiblings(parentId: string | null, orderedIds: string[]): void {
+  tree.update((t) => {
+    const arr = parentId ? findNode(t.nodes, parentId)?.children : t.nodes;
+    if (!arr) return t;
+    const rank = new Map<string, number>();
+    orderedIds.forEach((id, i) => rank.set(id, i));
+    arr.sort((a, b) => {
+      const ra = rank.has(a.id) ? (rank.get(a.id) as number) : Number.POSITIVE_INFINITY;
+      const rb = rank.has(b.id) ? (rank.get(b.id) as number) : Number.POSITIVE_INFINITY;
+      return ra - rb;
+    });
+    return t;
+  });
+}
+
+export function addTopLevel(node: Node): void {
+  tree.update((t) => {
+    t.nodes.push(node);
+    return t;
+  });
+}
+
+export function addChild(parentId: string, node: Node): void {
+  tree.update((t) => {
+    const parent = findNode(t.nodes, parentId);
+    if (parent) parent.children.push(node);
+    return t;
+  });
+}

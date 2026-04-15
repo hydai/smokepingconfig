@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { dndzone, type DndEvent } from 'svelte-dnd-action';
   import type { Node } from '$lib/types.js';
-  import { setIncluded } from '$lib/store.js';
+  import { reorderSiblings, setIncluded } from '$lib/store.js';
   import EditForm from './EditForm.svelte';
   import Self from './TreeNode.svelte';
 
@@ -10,6 +11,27 @@
   // svelte-ignore state_referenced_locally
   let expanded = $state(depth === 0);
   let editing = $state(false);
+
+  let childItems = $state<Node[]>([]);
+  let childDragging = $state(false);
+
+  $effect(() => {
+    if (!childDragging) childItems = [...node.children];
+  });
+
+  function handleChildConsider(event: CustomEvent<DndEvent<Node>>) {
+    childDragging = true;
+    childItems = event.detail.items;
+  }
+
+  function handleChildFinalize(event: CustomEvent<DndEvent<Node>>) {
+    childItems = event.detail.items;
+    childDragging = false;
+    reorderSiblings(
+      node.id,
+      childItems.map((n) => n.id)
+    );
+  }
 
   const isCategory = $derived(node.type === 'category' && node.children.length > 0);
 
@@ -85,9 +107,22 @@
 {/if}
 
 {#if expanded && node.children.length > 0}
-  <div class="children" role="group">
-    {#each node.children as child (child.id)}
-      <Self node={child} depth={depth + 1} />
+  <div
+    class="children"
+    role="group"
+    use:dndzone={{
+      items: childItems,
+      flipDurationMs: 180,
+      type: `p:${node.id}`,
+      dropTargetStyle: {}
+    }}
+    onconsider={handleChildConsider}
+    onfinalize={handleChildFinalize}
+  >
+    {#each childItems as child (child.id)}
+      <div>
+        <Self node={child} depth={depth + 1} />
+      </div>
     {/each}
   </div>
 {/if}
