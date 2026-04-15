@@ -1,5 +1,5 @@
 {
-  "schemaVer": 1,
+  "schemaVer": 2,
   "root": {
     "probe": "FPing",
     "menu": "Top",
@@ -907,5 +907,9 @@
         }
       ]
     }
-  ]
+  ],
+  "version": {
+    "date": "2026-04-15",
+    "sha": "7ec9697"
+  }
 }

@@ -12,7 +12,7 @@
 // Unknown attributes are preserved in `extraAttrs` so round-trip serialization
 // is lossless for fields we do not model explicitly (e.g., `alerts`, `pings`).
 
-import type { Catalog, Node, Probe, ProbeKind, RootMeta } from './types.js';
+import type { Catalog, CatalogVersion, Node, Probe, ProbeKind, RootMeta } from './types.js';
 
 interface RawSection {
   depth: number;
@@ -24,7 +24,7 @@ interface RawSection {
 const SECTION_HEADER = /^(\++)\s+(\S.*?)\s*$/;
 const ATTRIBUTE_LINE = /^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*(.*?)\s*$/;
 
-export function parseTargets(text: string): Catalog {
+export function parseTargets(text: string, version?: CatalogVersion): Catalog {
   const lines = joinContinuations(text);
   const root: RawSection = { depth: 0, name: '', attrs: {}, children: [] };
   const stack: RawSection[] = [root];
@@ -58,7 +58,7 @@ export function parseTargets(text: string): Catalog {
     // Unrecognized lines are ignored silently — SmokePing itself tolerates them.
   }
 
-  return rawToCatalog(root);
+  return rawToCatalog(root, version);
 }
 
 function joinContinuations(text: string): string[] {
@@ -101,7 +101,7 @@ const KNOWN_ATTRS = new Set([
   'remark'
 ]);
 
-function rawToCatalog(root: RawSection): Catalog {
+function rawToCatalog(root: RawSection, version?: CatalogVersion): Catalog {
   const rootProbe = (root.attrs.probe as ProbeKind | undefined) ?? 'FPing';
   const rootMeta: RootMeta = {
     probe: rootProbe,
@@ -110,11 +110,13 @@ function rawToCatalog(root: RawSection): Catalog {
   };
   if (root.attrs.remark !== undefined) rootMeta.remark = root.attrs.remark;
 
-  return {
-    schemaVer: 1,
+  const catalog: Catalog = {
+    schemaVer: 2,
     root: rootMeta,
     nodes: root.children.map((child) => rawToNode(child, ''))
   };
+  if (version) catalog.version = version;
+  return catalog;
 }
 
 function rawToNode(raw: RawSection, parentPath: string): Node {

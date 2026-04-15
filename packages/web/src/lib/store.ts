@@ -27,12 +27,22 @@ export function loadFromStorage(): WorkingTree | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
+    const parsed = migrateTree(JSON.parse(raw));
     if (!isValidTree(parsed)) return null;
     return parsed;
   } catch {
     return null;
   }
+}
+
+// v1 and v2 are structurally identical (v2 adds an optional `version` field);
+// bumping the number in place lets existing localStorage survive the schema
+// change without forcing users to lose their working tree.
+function migrateTree(v: unknown): unknown {
+  if (!v || typeof v !== 'object') return v;
+  const t = v as { schemaVer?: number };
+  if (t.schemaVer === 1) t.schemaVer = 2;
+  return v;
 }
 
 export function saveToStorage(t: WorkingTree): boolean {
@@ -57,7 +67,7 @@ export function clearStorage(): void {
 function isValidTree(v: unknown): v is WorkingTree {
   if (!v || typeof v !== 'object') return false;
   const t = v as Partial<WorkingTree>;
-  return t.schemaVer === 1 && Array.isArray(t.nodes) && t.root !== undefined;
+  return t.schemaVer === 2 && Array.isArray(t.nodes) && t.root !== undefined;
 }
 
 function hydrate(): WorkingTree {

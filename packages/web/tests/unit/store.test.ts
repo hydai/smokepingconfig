@@ -23,7 +23,7 @@ describe('freshTree', () => {
   it('returns a clone of the catalog with language', () => {
     const t = freshTree('zh-TW');
     expect(t.language).toBe('zh-TW');
-    expect(t.schemaVer).toBe(1);
+    expect(t.schemaVer).toBe(2);
     expect(t.nodes.length).toBeGreaterThan(0);
   });
 
@@ -42,7 +42,7 @@ describe('freshTree', () => {
 describe('store: tree', () => {
   it('initializes with the fresh catalog', () => {
     const value = get(tree);
-    expect(value.schemaVer).toBe(1);
+    expect(value.schemaVer).toBe(2);
     expect(value.nodes.length).toBeGreaterThan(0);
   });
 

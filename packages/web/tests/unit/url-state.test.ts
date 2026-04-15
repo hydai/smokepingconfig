@@ -120,7 +120,7 @@ describe('encodeTree / decodeTree', () => {
     // JSON that lz-compresses but has wrong v
     const bad = encodeTree({
       ...freshTree(),
-      schemaVer: 1
+      schemaVer: 2
     });
     // Replace the encoded v:1 with v:99 by round-tripping
     const raw = JSON.stringify({ v: 99 });

@@ -7,7 +7,7 @@ import type { Catalog } from '../src/types.js';
 describe('serializeCatalog', () => {
   it('emits the *** Targets *** header and root attributes', () => {
     const catalog: Catalog = {
-      schemaVer: 1,
+      schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'Network Latency Grapher' },
       nodes: []
     };
@@ -20,7 +20,7 @@ describe('serializeCatalog', () => {
 
   it('emits nested categories with correct + prefixes', () => {
     const catalog: Catalog = {
-      schemaVer: 1,
+      schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'X' },
       nodes: [
         {
@@ -55,7 +55,7 @@ describe('serializeCatalog', () => {
 
   it('skips nodes with included=false', () => {
     const catalog: Catalog = {
-      schemaVer: 1,
+      schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'X' },
       nodes: [
         {
@@ -78,7 +78,7 @@ describe('serializeCatalog', () => {
 
   it('emits probe-specific attributes in order', () => {
     const catalog: Catalog = {
-      schemaVer: 1,
+      schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'X' },
       nodes: [
         {
@@ -102,7 +102,7 @@ describe('serializeCatalog', () => {
 
   it('emits parent comparison host lines for categories', () => {
     const catalog: Catalog = {
-      schemaVer: 1,
+      schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'X' },
       nodes: [
         {
@@ -158,7 +158,7 @@ describe('serializeCatalog', () => {
 
   it('emits extra attributes after known ones', () => {
     const catalog: Catalog = {
-      schemaVer: 1,
+      schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'X' },
       nodes: [
         {

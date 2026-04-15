@@ -60,10 +60,19 @@ export interface RootMeta {
   remark?: string;
 }
 
+// Identifies which snapshot of the upstream catalogue this data came from.
+// `date` is UTC YYYY-MM-DD, `sha` is a 7-char git SHA. Populated only by the
+// build pipeline (prebuild); ad-hoc parses leave it undefined.
+export interface CatalogVersion {
+  date: string;
+  sha: string;
+}
+
 export interface Catalog {
   root: RootMeta;
   nodes: Node[];
-  schemaVer: 1;
+  schemaVer: 2;
+  version?: CatalogVersion;
 }
 
 export type Language = 'en' | 'zh-TW';
