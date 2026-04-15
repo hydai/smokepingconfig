@@ -1,11 +1,19 @@
 <script lang="ts">
   import { serializeCatalog } from '$lib/serializer.js';
   import { resetTree, tree } from '$lib/store.js';
+  import { buildShareUrl, writeHashState } from '$lib/url-state.js';
 
   const text = $derived(serializeCatalog($tree));
 
-  let copyState = $state<'idle' | 'copied' | 'failed'>('idle');
+  type CopyState = 'idle' | 'copied' | 'failed';
+  type ShareState = 'idle' | 'copied' | 'toolong' | 'failed';
+
+  let copyState = $state<CopyState>('idle');
+  let shareState = $state<ShareState>('idle');
   let copyTimer: ReturnType<typeof setTimeout> | undefined;
+  let shareTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const shareInfo = $derived(buildShareUrl($tree));
 
   async function copy() {
     try {
@@ -16,12 +24,34 @@
     }
   }
 
-  function flash(state: 'copied' | 'failed') {
+  function flash(state: Exclude<CopyState, 'idle'>) {
     copyState = state;
     if (copyTimer) clearTimeout(copyTimer);
     copyTimer = setTimeout(() => {
       copyState = 'idle';
     }, 1800);
+  }
+
+  async function share() {
+    if (!shareInfo.ok) {
+      flashShare('toolong');
+      return;
+    }
+    writeHashState($tree);
+    try {
+      await navigator.clipboard.writeText(shareInfo.url);
+      flashShare('copied');
+    } catch {
+      flashShare('failed');
+    }
+  }
+
+  function flashShare(state: Exclude<ShareState, 'idle'>) {
+    shareState = state;
+    if (shareTimer) clearTimeout(shareTimer);
+    shareTimer = setTimeout(() => {
+      shareState = 'idle';
+    }, 2200);
   }
 
   function download() {
@@ -54,6 +84,25 @@
     {/if}
   </button>
   <button type="button" onclick={download}>Download</button>
+  <button
+    type="button"
+    onclick={share}
+    data-state={shareState}
+    title={shareInfo.ok
+      ? `Share URL (${shareInfo.length} chars)`
+      : `URL too long (${shareInfo.length} > 6000). Use Download instead.`}
+    disabled={!shareInfo.ok && shareState === 'idle'}
+  >
+    {#if shareState === 'copied'}
+      ✓ URL copied
+    {:else if shareState === 'toolong'}
+      URL too long
+    {:else if shareState === 'failed'}
+      ✗ Failed
+    {:else}
+      Share
+    {/if}
+  </button>
   <button type="button" class="ghost" onclick={reset}>Reset</button>
 </div>
 
@@ -97,8 +146,13 @@
     border-color: #22c55e;
     color: #16a34a;
   }
-  button[data-state='failed'] {
+  button[data-state='failed'],
+  button[data-state='toolong'] {
     border-color: #ef4444;
     color: #dc2626;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>
