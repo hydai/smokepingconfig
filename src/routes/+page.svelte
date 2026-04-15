@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Actions from '$lib/components/Actions.svelte';
   import Preview from '$lib/components/Preview.svelte';
   import TreeView from '$lib/components/TreeView.svelte';
 </script>
@@ -17,7 +18,10 @@
       <TreeView />
     </section>
     <section class="pane preview-pane" aria-label="Generated config">
-      <h2>Preview</h2>
+      <div class="pane-header">
+        <h2>Preview</h2>
+        <Actions />
+      </div>
       <Preview />
     </section>
   </main>
@@ -69,12 +73,23 @@
     min-height: 0;
   }
   .pane h2 {
-    margin: 0 0 0.75rem;
+    margin: 0;
     font-size: 0.8125rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     opacity: 0.6;
+  }
+  .pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .preview-pane {
+    display: flex;
+    flex-direction: column;
   }
   @media (max-width: 768px) {
     .layout {
