@@ -4,6 +4,7 @@
   import Actions from '$lib/components/Actions.svelte';
   import LangToggle from '$lib/components/LangToggle.svelte';
   import Preview from '$lib/components/Preview.svelte';
+  import ProbesNotice from '$lib/components/ProbesNotice.svelte';
   import TreeView from '$lib/components/TreeView.svelte';
 </script>
 
@@ -28,6 +29,7 @@
         <h2>{$t('panes.preview')}</h2>
         <Actions />
       </div>
+      <ProbesNotice />
       <Preview />
     </section>
   </main>
