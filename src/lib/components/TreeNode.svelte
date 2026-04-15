@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Node } from '$lib/types.js';
   import { setIncluded } from '$lib/store.js';
+  import EditForm from './EditForm.svelte';
   import Self from './TreeNode.svelte';
 
   let { node, depth = 0 }: { node: Node; depth?: number } = $props();
@@ -8,6 +9,7 @@
   // `depth` is fixed per node; initial value capture is intentional.
   // svelte-ignore state_referenced_locally
   let expanded = $state(depth === 0);
+  let editing = $state(false);
 
   const isCategory = $derived(node.type === 'category' && node.children.length > 0);
 
@@ -28,6 +30,10 @@
 
   function toggleExpanded() {
     expanded = !expanded;
+  }
+
+  function toggleEdit() {
+    editing = !editing;
   }
 </script>
 
@@ -60,7 +66,23 @@
       <span class="host">{node.host}</span>
     {/if}
   </label>
+
+  <button
+    type="button"
+    class="edit"
+    onclick={toggleEdit}
+    aria-label={editing ? `Close editor for ${node.menu}` : `Edit ${node.menu}`}
+    aria-pressed={editing}
+  >
+    ✎
+  </button>
 </div>
+
+{#if editing}
+  <div style:--depth={depth}>
+    <EditForm {node} onClose={() => (editing = false)} />
+  </div>
+{/if}
 
 {#if expanded && node.children.length > 0}
   <div class="children" role="group">
@@ -138,5 +160,25 @@
   input[type='checkbox'] {
     accent-color: #38bdf8;
     cursor: pointer;
+  }
+  .edit {
+    opacity: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+    transition: opacity 0.12s;
+  }
+  .row:hover .edit,
+  .edit:focus-visible,
+  .edit[aria-pressed='true'] {
+    opacity: 0.8;
+  }
+  .edit:hover {
+    background: color-mix(in srgb, currentColor 12%, transparent);
+    opacity: 1;
   }
 </style>
