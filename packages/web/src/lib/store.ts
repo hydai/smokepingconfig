@@ -16,11 +16,16 @@ import { get, writable, type Writable } from 'svelte/store';
 
 import catalogData from '@smokepingconf/core/catalog.json';
 import {
+  applyPatch,
+  encodePatch,
   findNode,
   freshTree as coreFreshTree,
   idToPath,
+  patchFromYaml,
+  patchToYaml,
   walkNodes,
   type Catalog,
+  type DriftReport,
   type Language,
   type Node,
   type WorkingTree
@@ -36,6 +41,25 @@ export const baseCatalog = catalogData as Catalog;
 // existing call sites (`freshTree()`, `freshTree('zh-TW')`) keep working.
 export function freshTree(language: Language = 'en'): WorkingTree {
   return coreFreshTree(baseCatalog, language);
+}
+
+// Serialise the current working tree as a patch YAML suitable for git-commit.
+export function exportPatchYaml(): string {
+  return patchToYaml(encodePatch(get(tree), baseCatalog));
+}
+
+// Parse a patch YAML and compute the resulting tree + drift report, without
+// committing. The caller inspects drift and decides whether to apply via
+// commitImportedTree.
+export function previewPatchYaml(yamlText: string): { tree: WorkingTree; drift: DriftReport } {
+  const patch = patchFromYaml(yamlText);
+  return applyPatch(patch, baseCatalog);
+}
+
+// Commit a tree produced by previewPatchYaml (or any other source) to the
+// reactive store.
+export function commitImportedTree(t: WorkingTree): void {
+  tree.set(t);
 }
 
 export const STORAGE_KEY = 'smokepingconf:v1:state';

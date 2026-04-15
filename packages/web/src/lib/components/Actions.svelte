@@ -7,7 +7,8 @@
     serializeCatalog,
     writeHashState
   } from '@smokepingconf/core';
-  import { baseCatalog, resetTree, tree } from '$lib/store.js';
+  import { baseCatalog, exportPatchYaml, resetTree, tree } from '$lib/store.js';
+  import ImportPatchModal from './ImportPatchModal.svelte';
 
   const text = $derived(serializeCatalog($tree));
 
@@ -18,6 +19,8 @@
   let shareState = $state<ShareState>('idle');
   let copyTimer: ReturnType<typeof setTimeout> | undefined;
   let shareTimer: ReturnType<typeof setTimeout> | undefined;
+
+  let importOpen = $state(false);
 
   const shareInfo = $derived(buildShareUrl($tree, baseCatalog));
 
@@ -60,16 +63,24 @@
     }, 2200);
   }
 
-  function download() {
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  function downloadBlob(content: string, filename: string, mime: string) {
+    const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'Targets';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  }
+
+  function download() {
+    downloadBlob(text, 'Targets', 'text/plain;charset=utf-8');
+  }
+
+  function exportPatch() {
+    downloadBlob(exportPatchYaml(), 'patch.yaml', 'text/yaml;charset=utf-8');
   }
 
   function reset() {
@@ -111,8 +122,16 @@
       {$t('actions.share')}
     {/if}
   </button>
+  <button type="button" onclick={exportPatch}>{$t('actions.exportPatch')}</button>
+  <button type="button" onclick={() => (importOpen = true)}>
+    {$t('actions.importPatch')}
+  </button>
   <button type="button" class="ghost" onclick={reset}>{$t('actions.reset')}</button>
 </div>
+
+{#if importOpen}
+  <ImportPatchModal onClose={() => (importOpen = false)} />
+{/if}
 
 <style>
   .actions {

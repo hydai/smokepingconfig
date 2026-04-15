@@ -18,8 +18,33 @@
     "shareFailed": "✗ 分享失敗",
     "shareTitleOk": "分享網址（共 {length} 字元）",
     "shareTitleTooLong": "網址過長（{length} > {max}）。請改用下載。",
+    "exportPatch": "匯出 patch",
+    "importPatch": "匯入 patch",
     "reset": "重設",
     "resetConfirm": "捨棄所有修改並還原為預設目錄？"
+  },
+  "importPatch": {
+    "title": "匯入 patch",
+    "close": "關閉",
+    "fileLabel": "上傳 patch.yaml 檔",
+    "pasteLabel": "⋯或在此貼上 YAML",
+    "analyze": "分析",
+    "apply": "套用 patch",
+    "back": "返回",
+    "cancel": "取消",
+    "errors": {
+      "empty": "請先貼上或上傳 patch。"
+    },
+    "preview": {
+      "heading": "預覽",
+      "clean": "✓ patch 可乾淨套用在目前的 base 上。",
+      "missingHeading": "patch 引用但目前 base 裡不存在的路徑共 {count} 個：",
+      "mismatchHeading": "baseVersion 不一致",
+      "mismatchPatch": "patch 指定 {date} @ {sha}",
+      "mismatchBase": "目前 base 是 {date} @ {sha}",
+      "mismatchBaseUnknown": "目前 base 沒有版本戳記",
+      "hint": "仍可套用——找不到的路徑會被略過，未變動的覆寫照常生效。"
+    }
   },
   "stats": {
     "lines": "{count} 行",

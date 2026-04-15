@@ -2,10 +2,13 @@ import { get } from 'svelte/store';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
+  commitImportedTree,
+  exportPatchYaml,
   findNode,
   freshTree,
   loadFromStorage,
   mutateNode,
+  previewPatchYaml,
   removeNode,
   resetTree,
   saveToStorage,
@@ -124,5 +127,48 @@ describe('localStorage persistence (Node env has no window)', () => {
 
   it('saveToStorage returns false outside a browser', () => {
     expect(saveToStorage(freshTree())).toBe(false);
+  });
+});
+
+describe('patch export / import round-trip', () => {
+  it('exportPatchYaml for a fresh tree emits a valid patch document', () => {
+    resetTree('en');
+    const yaml = exportPatchYaml();
+    expect(yaml).toContain('schema: 1');
+    expect(yaml).toContain('baseVersion');
+  });
+
+  it('export → preview → commit restores the edited tree', () => {
+    resetTree('en');
+    const first = findNode(get(tree).nodes, 'c:CDN/Cloudflare')!;
+    first.included = false;
+    const yaml = exportPatchYaml();
+
+    resetTree('en'); // scrub the store
+    expect(findNode(get(tree).nodes, 'c:CDN/Cloudflare')?.included).toBe(true);
+
+    const { tree: incoming, drift } = previewPatchYaml(yaml);
+    expect(drift.missingPaths).toEqual([]);
+    expect(drift.baseMismatch).toBeNull();
+
+    commitImportedTree(incoming);
+    expect(findNode(get(tree).nodes, 'c:CDN/Cloudflare')?.included).toBe(false);
+  });
+
+  it('previewPatchYaml surfaces drift for stale paths without committing', () => {
+    resetTree('en');
+    const patchYaml = [
+      'schema: 1',
+      'baseVersion:',
+      '  date: "2020-01-01"',
+      '  sha: aaaaaaa',
+      'excluded:',
+      '  - /CDN/DoesNotExist'
+    ].join('\n');
+    const { drift } = previewPatchYaml(patchYaml);
+    expect(drift.missingPaths).toContain('/CDN/DoesNotExist');
+    expect(drift.baseMismatch).not.toBeNull();
+    // Store unchanged — preview is read-only.
+    expect(findNode(get(tree).nodes, 'c:CDN/Cloudflare')?.included).toBe(true);
   });
 });

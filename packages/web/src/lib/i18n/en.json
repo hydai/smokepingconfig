@@ -18,8 +18,33 @@
     "shareFailed": "✗ Failed",
     "shareTitleOk": "Share URL ({length} chars)",
     "shareTitleTooLong": "URL too long ({length} > {max}). Use Download instead.",
+    "exportPatch": "Export patch",
+    "importPatch": "Import patch",
     "reset": "Reset",
     "resetConfirm": "Reset all edits and start from the curated catalog?"
+  },
+  "importPatch": {
+    "title": "Import patch",
+    "close": "Close",
+    "fileLabel": "Upload a patch.yaml",
+    "pasteLabel": "…or paste YAML here",
+    "analyze": "Analyze",
+    "apply": "Apply patch",
+    "back": "Back",
+    "cancel": "Cancel",
+    "errors": {
+      "empty": "Paste or upload a patch first."
+    },
+    "preview": {
+      "heading": "Preview",
+      "clean": "✓ Patch applies cleanly against the current base.",
+      "missingHeading": "{count, plural, one {# path referenced by patch but missing from base} other {# paths referenced by patch but missing from base}}:",
+      "mismatchHeading": "baseVersion mismatch",
+      "mismatchPatch": "patch pinned to {date} @ {sha}",
+      "mismatchBase": "current base is {date} @ {sha}",
+      "mismatchBaseUnknown": "current base has no version stamp",
+      "hint": "You can still apply — missing paths will be silently dropped and any non-pinned overrides take effect."
+    }
   },
   "stats": {
     "lines": "{count} {count, plural, one {line} other {lines}}",
