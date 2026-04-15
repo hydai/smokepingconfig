@@ -15,7 +15,7 @@
     <span aria-hidden="true">·</span>
     <span>{$t('stats.bytes', { values: { count: bytes } })}</span>
   </header>
-  <pre class="output"><code>{text}</code></pre>
+  <pre class="output" data-testid="preview"><code>{text}</code></pre>
 </div>
 
 <style>
