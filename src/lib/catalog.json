@@ -1,0 +1,9 @@
+{
+  "root": {
+    "probe": "FPing",
+    "menu": "Top",
+    "title": "Network Latency Grapher"
+  },
+  "nodes": [],
+  "schemaVer": 1
+}

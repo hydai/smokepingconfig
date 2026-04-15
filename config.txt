@@ -1,0 +1,397 @@
+*** Targets ***
+
+probe = FPing
+
+menu = Top
+title = Network Latency Grapher
+# remark = Welcome to the SmokePing website of WORKS Company. \
+#        Here you will learn all about the latency of our network.
+
++ CDN
+
+menu = CDN
+title = CDN
+
+++ Cloudflare
+menu = Cloudflare
+title = cloudflare.com
+host = cloudflare.com
+
+++ Fastly
+menu = Fastly
+title = Fastly
+host = www.fastly.com
+
+++ Akamai
+menu = Akamai
+title = Akamai
+host = www.akamai.com
+
+++ GoogleFonts
+menu = Google Fonts
+title = Google Fonts
+host = fonts.gstatic.com
+
++ Cloud
+
+menu = Cloud
+title = Cloud
+
+++ AWS
+menu = Amazon Web Service
+title = Amazon Web Service
+host = aws.amazon.com
+
+++ GCP
+menu = Google Cloud
+title = Google Cloud
+host = cloud.google.com
+
++ Streaming
+
+menu = Streaming
+title = Streaming
+
+++ Youtube
+menu = YouTube
+title = YouTube
+host = youtube.com
+
+++ Netflix
+menu = Netflix
+title = Netflix CDN
+host = fast.com
+
++ Internet
+
+menu = Internet
+title = Internet
+
+++ Facebook
+menu = Facebook
+title = Facebook
+host = facebook.com
+
+++ Google
+menu = Google
+title = google.com
+host = google.com
+
+++ GitHub
+menu = GitHub
+title = GitHub
+host = github.com
+
+++ HiNet
+menu = HiNet
+title = HiNet
+host = www.hinet.net
+
++ Asia
+menu = Asia
+title = Asia Connectivity
+host = /Asia/Taiwan/HiNet /Asia/Taiwan/TWM /Asia/Taiwan/Seednet /Asia/Taiwan/SoNet /Asia/Taiwan/APTG
+
+++ Taiwan
+menu = Taiwan
+title = Taiwan
+
++++ HiNet
+menu = HiNet
+title = HiNet
+host = 168.95.1.1
+
++++ TWM
+menu = 台灣大寬頻
+title = 台灣大寬頻
+host = 61.31.233.1
+
++++ Seednet
+menu = Seednet
+title = Seednet
+host = 139.175.55.244 139.175.150.20 139.175.10.20 211.78.130.2
+
++++ SoNet
+menu = So-net
+title = So-net
+host = 61.64.127.1
+
++++ APTG
+menu = 亞太
+title = 亞太
+host = 210.200.211.225
+
++ DNS
+menu = DNS
+title = DNS
+
+++ GoogleDNS1
+menu = Google DNS 1
+title = Google DNS 8.8.8.8
+host = 8.8.8.8
+
+++ GoogleDNS2
+menu = Google DNS 2
+title = Google DNS 8.8.4.4
+host = 8.8.4.4
+
+++ OpenDNS1
+menu = OpenDNS1
+title = OpenDNS1
+host = 208.67.222.222
+
+++ OpenDNS2
+menu = OpenDNS2
+title = OpenDNS2
+host = 208.67.220.220
+
+++ CloudflareDNS1
+menu = Cloudflare DNS 1
+title = Cloudflare DNS 1.1.1.1
+host = 1.1.1.1
+
+++ CloudflareDNS2
+menu = Cloudflare DNS 2
+title = Cloudflare DNS 1.0.0.1
+host = 1.0.0.1
+
+++ HiNetDNS1
+menu = HiNet DNS 1
+title = HiNet DNS 168.95.1.1
+host = 168.95.1.1
+
+++ HiNetDNS2
+menu = HiNet DNS 2
+title = HiNet DNS 168.95.192.1
+host = 168.95.192.1
+
+++ L3-1
+menu = Level3 DNS 1
+title = Level3 DNS 4.2.2.1
+host = 4.2.2.1
+
+++ L3-2
+menu = Level3 DNS 2
+title = Level3 DNS 4.2.2.2
+host = 4.2.2.2
+
+++ Quad9
+menu = Quad9
+title = Quad9 DNS 9.9.9.9
+host = 9.9.9.9
+
++ DNSProbes
+menu = DNS Probes
+title = DNS Probes
+probe = DNS
+
+++ GoogleDNS1
+menu = Google DNS 1
+title = Google DNS 8.8.8.8
+host = 8.8.8.8
+
+++ GoogleDNS2
+menu = Google DNS 2
+title = Google DNS 8.8.4.4
+host = 8.8.4.4
+
+++ OpenDNS1
+menu = OpenDNS1
+title = OpenDNS1
+host = 208.67.222.222
+
+++ OpenDNS2
+menu = OpenDNS2
+title = OpenDNS2
+host = 208.67.220.220
+
+++ CloudflareDNS1
+menu = Cloudflare DNS 1
+title = Cloudflare DNS 1.1.1.1
+host = 1.1.1.1
+
+++ CloudflareDNS2
+menu = Cloudflare DNS 2
+title = Cloudflare DNS 1.0.0.1
+host = 1.0.0.1
+
+++ HiNetDNS1
+menu = HiNet DNS 1
+title = HiNet DNS 168.95.1.1
+host = 168.95.1.1
+
+++ HiNetDNS2
+menu = HiNet DNS 2
+title = HiNet DNS 168.95.192.1
+host = 168.95.192.1
+
+++ L3-1
+menu = Level3 DNS 1
+title = Level3 DNS 4.2.2.1
+host = 4.2.2.1
+
+++ L3-2
+menu = Level3 DNS 2
+title = Level3 DNS 4.2.2.2
+host = 4.2.2.2
+
+++ Quad9
+menu = Quad9
+title = Quad9 DNS 9.9.9.9
+host = 9.9.9.9
+
++ Hosting
+
+menu = Hosting
+title = The hosting service monitoring
+
+++ Taiwan
+menu = 台灣
+title = 台灣主機商
+host = /Hosting/Taiwan/DCT /Hosting/Taiwan/YJ /Hosting/Taiwan/SkyDigi /Hosting/Taiwan/Nunline
+
++++ DCT
+host = 210.203.22.254
+title = DCT
+menu = 雲高
+
++++ YJ
+host = 113.196.112.1
+title = YJ
+menu = 遠振
+
++++ SkyDigi
+host = 103.246.218.1
+title = SkyDigi
+menu = 天空數位
+
++++ Nunline
+
+menu = Nunline
+title = 努恩數位
+host = 203.175.104.108
+
+++ Linode
+menu = Linode
+title = Linode
+host = /Hosting/Linode/US-East /Hosting/Linode/US-Southeast /Hosting/Linode/US-Central /Hosting/Linode/US-West /Hosting/Linode/EU-Central /Hosting/Linode/EU-West /Hosting/Linode/AP-South /Hosting/Linode/AP-Northeast
+
++++ US-East
+host = 50.116.57.237
+title = US-East
+menu = US－East
+
++++ US-Southeast
+host = 50.116.39.117
+title = US-Southeast
+menu = US－Southeast
+
++++ US-Central
+host = 50.116.25.154
+title = US-Central
+menu = US－Central
+
++++ US-West
+host = 50.116.14.9
+title = US-West
+menu = US－West
+
++++ EU-Central
+host = 139.162.130.8
+title = EU-Central
+menu = EU－Central
+
++++ EU-West
+host = 176.58.107.39
+title = EU-West
+menu = EU－West
+
++++ AP-South
+host = 139.162.23.4
+title = AP-South
+menu = AP－South
+
++++ AP-Northeast
+host = 139.162.65.37
+title = AP-Northeast
+menu = AP－Northeast
+
+++ Vultr
+menu = Vultr
+title = Vultr
+host = /Hosting/Vultr/Frankfurt /Hosting/Vultr/Paris /Hosting/Vultr/Amsterdam /Hosting/Vultr/London /Hosting/Vultr/Singapore /Hosting/Vultr/New-York /Hosting/Vultr/Chicago /Hosting/Vultr/Atlanta /Hosting/Vultr/Miami /Hosting/Vultr/Tokyo /Hosting/Vultr/Dallas /Hosting/Vultr/Seattle /Hosting/Vultr/Silicon-Valley /Hosting/Vultr/Los-Angeles /Hosting/Vultr/Sydney
+
++++ Frankfurt
+host = fra-de-ping.vultr.com
+title = Frankfurt
+menu = Frankfurt
+
++++ Paris
+host = par-fr-ping.vultr.com
+title = Paris
+menu = Paris
+
++++ Amsterdam
+host = ams-nl-ping.vultr.com
+title = Amsterdam
+menu = Amsterdam
+
++++ London
+host = lon-gb-ping.vultr.com
+title = London
+menu = London
+
++++ Singapore
+host =     sgp-ping.vultr.com
+title = Singapore
+menu = Singapore
+
++++ New-York
+host = nj-us-ping.vultr.com
+title = New York
+menu = New－York
+
++++ Chicago
+host = il-us-ping.vultr.com
+title = Chicago
+menu = Chicago
+
++++ Atlanta
+host =     ga-us-ping.vultr.com
+title = Atlanta
+menu = Atlanta
+
++++ Miami
+host = fl-us-ping.vultr.com
+title = Miami
+menu = Miami
+
++++ Tokyo
+host = hnd-jp-ping.vultr.com
+title = Tokyo
+menu = Tokyo
+
++++ Dallas
+host =     tx-us-ping.vultr.com
+title = Dallas
+menu = Dallas
+
++++ Seattle
+host =     wa-us-ping.vultr.com
+title = Seattle
+menu = Seattle
+
++++ Silicon-Valley
+host =     sjo-ca-us-ping.vultr.com
+title = Silicon Valley
+menu = Silicon－Valley
+
++++ Los-Angeles
+host =     lax-ca-us-ping.vultr.com
+title = Los Angeles
+menu = Los－Angeles
+
++++ Sydney
+host = syd-au-ping.vultr.com
+title = Sydney
+menu = Sydney
