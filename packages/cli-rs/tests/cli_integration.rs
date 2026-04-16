@@ -206,6 +206,22 @@ fn render_unknown_on_drift_exits_2() {
     );
 }
 
+#[test]
+fn render_malformed_patch_shows_file_path() {
+    let dir = tempfile::tempdir().unwrap();
+    let patch = write_patch(&dir, "broken.yaml", "not: a: valid: patch\n");
+    let out = cli()
+        .args(["render", patch.to_str().unwrap()])
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(1));
+    let stderr = String::from_utf8(out.stderr).unwrap();
+    assert!(
+        stderr.contains("broken.yaml"),
+        "stderr should include patch file path, got: {stderr}"
+    );
+}
+
 // -----------------------------------------------------------------------------
 // diff-base
 // -----------------------------------------------------------------------------

@@ -168,21 +168,20 @@ pub fn patch_to_yaml(patch: &Patch) -> Result<String, String> {
 }
 
 pub fn patch_from_yaml(text: &str) -> Result<Patch, String> {
-    let parsed: serde_yaml_ng::Value =
-        serde_yaml_ng::from_str(text).map_err(|e| format!("patchFromYaml: {}", e))?;
+    let parsed: serde_yaml_ng::Value = serde_yaml_ng::from_str(text).map_err(|e| e.to_string())?;
 
     if !parsed.is_mapping() {
-        return Err("patchFromYaml: input is not a YAML mapping".to_string());
+        return Err("not a YAML mapping".to_string());
     }
 
     let schema = parsed
         .get("schema")
         .and_then(|v| v.as_u64())
-        .ok_or_else(|| "patchFromYaml: missing schema".to_string())?;
+        .ok_or_else(|| "missing schema".to_string())?;
 
     if schema != PATCH_SCHEMA as u64 {
         return Err(format!(
-            "patchFromYaml: unsupported schema (got {}, expected {})",
+            "unsupported schema (got {}, expected {})",
             schema, PATCH_SCHEMA
         ));
     }
@@ -195,10 +194,10 @@ pub fn patch_from_yaml(text: &str) -> Result<Patch, String> {
             .map(|v| v.is_string())
             .unwrap_or(false)
     {
-        return Err("patchFromYaml: missing or malformed baseVersion".to_string());
+        return Err("missing or malformed baseVersion".to_string());
     }
 
-    serde_yaml_ng::from_str(text).map_err(|e| format!("patchFromYaml: {}", e))
+    serde_yaml_ng::from_str(text).map_err(|e| e.to_string())
 }
 
 #[cfg(test)]

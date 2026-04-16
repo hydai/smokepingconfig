@@ -60,7 +60,7 @@ pub fn run_render(
     let patch = match patch_from_yaml(&patch_text) {
         Ok(p) => p,
         Err(e) => {
-            eprintln!("smokeping-config: {}", e);
+            eprintln!("smokeping-config: {}: {}", patch_path, e);
             return 1;
         }
     };
