@@ -29,8 +29,12 @@ command = "git push --force --set-upstream origin release-cli-rs"
 [[workflows.steps]]
 type = "CreatePullRequest"
 base = "master"
-title = "chore: release smokeping-config $version"
-body = "$changelog"
+
+[workflows.steps.title]
+template = "chore: release smokeping-config $version"
+
+[workflows.steps.body]
+template = "$changelog"
 
 [[workflows]]
 name = "release"
