@@ -1,20 +1,23 @@
 # Contributing
 
-Thanks for wanting to extend the SmokePing Config Builder. The repo is an npm
-workspaces monorepo with three packages — the sections below map each kind of
-change to the right workspace and the exact files you'll touch.
+Thanks for wanting to extend the SmokePing Config Builder. The repo is a
+mixed-toolchain monorepo — Node (npm workspaces) for the web app and the core
+library, Rust (Cargo) for the CLI. The sections below map each kind of change
+to the right package and the exact files you'll touch.
 
 ## Monorepo layout
 
-| Package               | Where            | What lives here                                                            |
-| --------------------- | ---------------- | -------------------------------------------------------------------------- |
-| `@smokepingconf/core` | `packages/core/` | Pure logic: types, parser / serializer, probes, tree helpers, patch model. |
-| `@smokepingconf/web`  | `packages/web/`  | SvelteKit app — tree editor, Import/Export Patch modal, share URL, i18n.   |
-| `@smokepingconf/cli`  | `packages/cli/`  | `commander` CLI — `render`, `diff-base`, `init`. Bundled via tsup.         |
+| Package               | Where              | What lives here                                                                                            |
+| --------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `@smokepingconf/core` | `packages/core/`   | Pure logic: types, parser / serializer, probes, tree helpers, patch model.                                 |
+| `@smokepingconf/web`  | `packages/web/`    | SvelteKit app — tree editor, Import/Export Patch modal, share URL, i18n.                                   |
+| `smokeping-config`    | `packages/cli-rs/` | `clap` CLI (Rust crate) — `render`, `diff-base`, `init`. Published to crates.io as a static single binary. |
 
 The curated catalogue source of truth is `config.txt` at the repo root.
 `npm run build` regenerates `packages/core/src/catalog.json`, stamped with
-`version = { date, sha }`.
+`version = { date, sha }`; `packages/cli-rs/build.rs` then copies that JSON
+into the crate's `OUT_DIR` and embeds it at compile time, so the Rust CLI
+is self-contained at runtime.
 
 ## Where do I add what?
 
@@ -30,7 +33,14 @@ The curated catalogue source of truth is `config.txt` at the repo root.
 
 ## Dev setup
 
-Node 24 (see `.nvmrc`). First-time setup:
+Two toolchains, split by package:
+
+- **Node 24** (see `.nvmrc`) for `packages/core/` and `packages/web/`.
+- **Rust 1.85+** (2024 edition) for `packages/cli-rs/`. Install via
+  [rustup](https://rustup.rs/); `rustup show` should list a toolchain at
+  or above 1.85.
+
+First-time setup:
 
 ```sh
 npm install
@@ -39,13 +49,20 @@ npm run dev                       # http://localhost:5173
 ```
 
 Before opening a PR (these mirror what CI runs in
-`.github/workflows/ci.yml`):
+`.github/workflows/ci.yml` and `.github/workflows/ci-cli-rs.yml`):
 
 ```sh
-npm run check     # core tsc + web svelte-check + cli tsc
-npm test          # vitest across core, web, cli
-npm run build     # prebuild + web build + cli bundle
+# Node side — core + web
+npm run check     # core tsc + web svelte-check
+npm test          # vitest across core and web
+npm run build     # prebuild + web build
 npm run test:e2e  # Playwright (boots `npm run build && npm run preview`)
+
+# Rust side — run from packages/cli-rs/
+cargo fmt --check
+cargo clippy -- -D warnings
+cargo test --release
+cargo build --release
 ```
 
 ## Curated catalogue entries
@@ -74,12 +91,22 @@ recognised per-node attributes (see
 round-trips on save.
 
 Regenerate the catalogue with either command — `prebuild` is a lifecycle hook
-of web and CLI `build`, so CI does this automatically:
+of `@smokepingconf/web`'s build, so Node CI does this automatically:
 
 ```sh
 npm -w @smokepingconf/core run prebuild   # writes packages/core/src/catalog.json
-npm run build                             # full orchestrated build
+npm run build                             # full Node orchestrated build
 ```
+
+The Rust CLI picks up the regenerated `catalog.json` at its next compile —
+`packages/cli-rs/build.rs` copies the file into `OUT_DIR` on every `cargo
+build`, so after `prebuild` you'll want:
+
+```sh
+cd packages/cli-rs && cargo build --release
+```
+
+to re-embed the fresh catalogue into `target/release/smokeping-config`.
 
 **Gotcha**: `packages/core/tests/parser.test.ts` locks the list of top-level
 categories. If you add, remove, or rename a `+`-level entry, update the
@@ -166,56 +193,59 @@ add a top-level field or a per-node attribute:
    an optional field is safe on both; adding a required field needs a
    version bump with a fallback decoder.
 5. Update tests in `packages/core/tests/patch.test.ts` (round-trip + YAML
-   stability) and the CLI integration tests in
-   `packages/cli/tests/cli.test.ts`.
+   stability) and the Rust CLI integration tests in
+   `packages/cli-rs/tests/cli_integration.rs`. When mirroring a new
+   field into the Rust side, update the shapes in
+   `packages/cli-rs/src/patch.rs` / `src/types.rs` in lockstep.
 
 ## CLI development
 
-The CLI is bundled by tsup into a single ESM `dist/index.js`.
-`noExternal: ['@smokepingconf/core', 'lz-string']` inlines the pure-TS
-sources and `lz-string`'s CJS exports; `yaml` stays external because its
-transitive `require('process')` trips tsup's ESM `__require` shim.
+The CLI is a Rust crate at `packages/cli-rs/`. Binary name
+`smokeping-config`, published to crates.io under the same name. Minimum
+Rust 1.85 (2024 edition).
 
-Subcommands live in `packages/cli/src/commands/`. Each file exports a
-`register<Name>(program)` that adds a `commander` command and an async
-action. The action delegates to a `run<Name>(args, opts)` function whose
-exit code is the integer the CLI returns. Errors bubble up as rejected
-promises to the top-level `parseAsync().catch(...)` which prints and
-exits 1.
+The `clap` entry point is `src/main.rs` (derive API,
+`disable_version_flag = true` so `-v` / `--version` prints the CLI
+version plus the bundled catalog's `{date, sha}` stamp). Each
+subcommand lives in its own module under `src/commands/`:
 
-When adding a command:
+- `init.rs` — writes a minimal starter `patch.yaml` pinned to the
+  bundled base.
+- `render.rs` — composes base + patch and emits a `Targets` file.
+- `diff_base.rs` — reports drift between a patch and the resolved base.
 
-1. Create `packages/cli/src/commands/<name>.ts` following the pattern
-   above.
-2. Register it in `packages/cli/src/index.ts`.
-3. Add integration tests in `packages/cli/tests/cli.test.ts` that spawn
-   the built `dist/index.js` via `spawnSync` and assert exit code + stdout
-   - stderr. Use `encodePatch` + `patchToYaml` to generate fixture
-     patches pinned to the bundled catalog's current `{date, sha}`.
+Shared helpers are split into focused modules: `base_resolver.rs` (the
+`--base <file>` → `--base-url <url>` → bundled cascade, using `reqwest`
+with rustls for the HTTP path), `patch.rs` (`serde_yaml_ng` I/O),
+`diff.rs` (drift detection), `serializer.rs` (Targets emission),
+`tree.rs` (path ↔ id helpers), `types.rs` (Catalog / Node / Probe
+mirroring `@smokepingconf/core`).
 
-### Releasing the CLI
+The bundled catalogue is embedded at compile time: `build.rs` copies
+`packages/core/src/catalog.json` into `OUT_DIR`, and `base_resolver.rs`
+reads it via
+`include_str!(concat!(env!("OUT_DIR"), "/catalog.json"))`. Changes to
+`config.txt` therefore require re-running
+`npm -w @smokepingconf/core run prebuild` before `cargo build --release`.
 
-`@smokepingconf/core` is a devDependency of `@smokepingconf/cli`; it is
-inlined into the tsup bundle and never resolved from the public registry
-at install time, so only the CLI needs publishing. The
-`.github/workflows/release-cli.yml` workflow fires on tags matching
-`cli-v*` and runs `npm publish --access public --provenance` with the
-`NPM_TOKEN` repo secret.
+Integration tests live in `tests/cli_integration.rs` using `assert_cmd`
+and `tempfile`. They cover `--version`, `--help`, each subcommand's
+happy path, every `--on-drift` mode (`ignore` / `warn` / `error`),
+`baseVersion` mismatches, and the exit-code contract (`0` success, `1`
+error-mode drift / I/O / parse, `2` invalid flag value).
 
-To cut a release:
+When adding a new subcommand or flag:
 
-```sh
-# Bump in a commit of its own so the tag points at a clean version bump.
-npm -w @smokepingconf/cli version patch   # or minor / major
-git push origin master
-git push origin cli-v$(node -p "require('./packages/cli/package.json').version")
-```
+1. Add a `src/commands/<name>.rs` module that takes the parsed args
+   struct and returns an exit code. Reuse `base_resolver` for base
+   loading and `diff` for drift classification where applicable.
+2. Register it in the `Commands` enum in `src/main.rs` (a
+   `#[derive(Subcommand)]` variant) and dispatch to it from `main()`.
+3. Add integration tests in `tests/cli_integration.rs` — happy path,
+   error path, and each relevant `--on-drift` mode. Use `tempfile` to
+   scope fixtures to the test run.
 
-The workflow verifies the tag matches `packages/cli/package.json` before
-publishing, reruns the CLI test suite as a last-mile gate, and publishes
-with [npm provenance](https://docs.npmjs.com/generating-provenance-statements).
-
-### Releasing the Rust CLI
+## Releasing the CLI
 
 `packages/cli-rs/` ships on two channels — GitHub Releases (prebuilt
 static binaries for Linux musl x86_64/aarch64, macOS x86_64/aarch64,
@@ -223,7 +253,7 @@ Windows MSVC x86_64) and crates.io — both driven by conventional-commit
 automation. No developer ever edits `Cargo.toml`'s `version` field
 directly.
 
-**How it works** ([knope] 0.22.2, [Trusted Publishing][tp] via
+**How it works** ([knope] 0.22.4, [Trusted Publishing][tp] via
 [`rust-lang/crates-io-auth-action`][auth-action]):
 
 1. Merge `feat(cli-rs):` / `fix(cli-rs):` commits to `master`. Other
@@ -296,12 +326,17 @@ PRs welcome for these — open an issue first if they're non-trivial.
 
 - Follow [Conventional Commits](https://www.conventionalcommits.org/):
   `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `ci:`. Scope
-  by package where useful: `feat(core):`, `feat(web):`, `feat(cli):`.
+  by package where useful: `feat(core):`, `feat(web):`, `feat(cli-rs):`.
+  The `cli-rs` scope is also what knope keys off for Rust-CLI releases
+  (see [Releasing the CLI](#releasing-the-cli)).
 - One concern per commit — split logically.
 - Branch off `master`; open PRs against `master`.
-- CI runs lint (`prettier --check` + `eslint`), type checking
-  (`npm run check`), unit tests across all three packages, build, and
-  E2E on every PR.
+- CI is split by toolchain and path-scoped:
+  `.github/workflows/ci.yml` handles lint (`prettier --check` +
+  `eslint`), type checking (`npm run check`), unit tests, build, and
+  E2E for core + web. `.github/workflows/ci-cli-rs.yml` runs
+  `cargo fmt --check`, `cargo clippy -- -D warnings`,
+  `cargo test --release`, and a release build for `cli-rs`.
 - The GitHub Pages deploy runs on push to `main` / `master` and
   regenerates `catalog.json` itself, so a slightly stale committed copy
   won't block deployment — but please still run `npm run build` locally
@@ -315,8 +350,9 @@ Copy this into your PR description:
 - [ ] Ran `npm run lint && npm run check && npm test`
 - [ ] Ran `npm run build` (regenerates `packages/core/src/catalog.json` if `config.txt` changed)
 - [ ] Ran `npm run test:e2e` if UI behaviour changed
+- [ ] Ran `cargo fmt --check && cargo clippy -- -D warnings && cargo test --release && cargo build --release` in `packages/cli-rs/` if the Rust CLI changed (or `config.txt` / `catalog.json` did)
 - [ ] Updated i18n keys in both `en.json` and `zh-TW.json`
 - [ ] Updated `packages/core/tests/parser.test.ts` if top-level categories changed
-- [ ] If touching the patch schema: updated core, web, CLI, and tests in lockstep
-- [ ] Commit messages follow Conventional Commits
+- [ ] If touching the patch schema: updated `packages/core/`, `packages/web/`, `packages/cli-rs/`, and tests in lockstep
+- [ ] Commit messages follow Conventional Commits (use `cli-rs` as the scope for Rust-CLI changes)
 ```

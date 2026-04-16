@@ -3,7 +3,7 @@
 A bilingual (English / 繁體中文) toolkit for composing a [SmokePing](https://oss.oetiker.ch/smokeping/) `Targets` file from a shared curated catalogue plus your own patches.
 
 - **Web app** — pick targets from the tree, edit any entry, export a committable `patch.yaml` or share via URL. Runs entirely in the browser.
-- **CLI** (`@smokepingconf/cli`) — render the same patch against the bundled (or custom) base catalogue from the command line. Scripts cleanly into Ansible, cron, GitHub Actions.
+- **CLI** (`smokeping-config`) — a single static binary (Rust, published to [crates.io](https://crates.io/crates/smokeping-config)) that renders the same patch against the bundled (or custom) base catalogue from the command line. No Node.js, no runtime deps. Scripts cleanly into Ansible, cron, GitHub Actions.
 
 Both front-ends read and write the same YAML schema, so you can edit interactively and render reproducibly without the two going out of sync.
 
@@ -23,16 +23,22 @@ Pick targets at <https://hydai.github.io/smokepingconfig/> (or your own deploy),
 ## Quick start — CLI
 
 ```sh
-npx @smokepingconf/cli init           # writes patch.yaml pinned to the bundled catalogue
+# install — pick one
+cargo install smokeping-config
+# or grab a prebuilt static binary from the GitHub Releases page:
+#   smokeping-config-linux-x86_64, -linux-aarch64,
+#   -macos-x86_64, -macos-aarch64, -windows-x86_64.exe
+
+smokeping-config init                        # writes patch.yaml pinned to the bundled catalogue
 # ... edit patch.yaml ...
-npx @smokepingconf/cli render patch.yaml --out Targets
-npx @smokepingconf/cli diff-base patch.yaml
+smokeping-config render patch.yaml --out Targets
+smokeping-config diff-base patch.yaml
 ```
 
 Base resolution cascade: `--base <file>` → `--base-url <url>` → bundled snapshot.
 Drift modes: `--on-drift=ignore | warn (default) | error`.
 
-Running `npx @smokepingconf/cli --version` prints both the CLI version and the bundled catalogue's `{date, sha}` stamp, so CI logs record exactly which base was rendered against.
+Running `smokeping-config --version` prints both the CLI version and the bundled catalogue's `{date, sha}` stamp, so CI logs record exactly which base was rendered against.
 
 ## Architecture
 
@@ -48,37 +54,47 @@ packages/core/src/catalog.json   stamped with version = { date, sha }
     ├─ @smokepingconf/web        SvelteKit app — tree UI, Import/Export Patch
     │                            modal, live preview, share URL
     │
-    └─ @smokepingconf/cli        commander CLI — render / diff-base / init,
-                                 ships as self-contained ESM bundle
+    └─ smokeping-config          clap CLI (Rust crate) — render / diff-base /
+                                 init, ships as a static single binary with
+                                 catalog.json embedded at compile time
 ```
 
-`web` and `cli` both depend on `core`; they are swappable front-ends over the same patch schema and merge algorithm.
+`web` consumes `@smokepingconf/core` directly; `smokeping-config` embeds a build-time copy of `core`'s `catalog.json` via `build.rs`. Both are swappable front-ends over the same patch schema and merge algorithm.
 
 ## Development
 
-Node 24 (see `.nvmrc`). First-time setup:
+Two toolchains, split by package:
+
+- **Node 24** (see `.nvmrc`) for `packages/core/` (catalogue + TypeScript library) and `packages/web/` (SvelteKit app).
+- **Rust 1.85+** (2024 edition) for `packages/cli-rs/` (the `smokeping-config` binary).
+
+First-time setup:
 
 ```sh
 npm install
 npx playwright install chromium   # one-time, for E2E
 ```
 
-Common commands (run from the repo root — they orchestrate across workspaces):
+Common Node commands (run from the repo root — they orchestrate across workspaces):
 
 ```sh
 npm run dev           # SvelteKit dev server on :5173
-npm run check         # tsc for core/cli + svelte-check for web
-npm test              # vitest in core, web, cli
-npm run build         # regenerates catalog.json + builds web + bundles cli
+npm run check         # tsc for core + svelte-check for web
+npm test              # vitest in core and web
+npm run build         # regenerates catalog.json + builds web
 npm run test:e2e      # Playwright smoke flow (incl. Import/Export round-trip)
 ```
 
-Per-package operations:
+Rust CLI (run inside `packages/cli-rs/`):
 
 ```sh
-npm -w @smokepingconf/core run prebuild   # regenerate catalog.json from config.txt
-npm -w @smokepingconf/cli run build       # rebuild the CLI bundle only
+cargo build --release          # produces target/release/smokeping-config
+cargo test --release           # assert_cmd-based integration tests
+cargo fmt --check
+cargo clippy -- -D warnings
 ```
+
+The CLI's `build.rs` copies `packages/core/src/catalog.json` into the build directory and embeds it via `include_str!`, so rerun `npm -w @smokepingconf/core run prebuild` before `cargo build --release` whenever `config.txt` changes.
 
 ## Project layout
 
@@ -113,13 +129,17 @@ packages/web/
 ├── tests/unit/                      store, url-state
 └── tests/e2e/flow.spec.ts           Playwright
 
-packages/cli/
+packages/cli-rs/
 ├── src/
-│   ├── index.ts                     commander entry
-│   ├── base-resolver.ts             --base / --base-url / bundled cascade
-│   └── commands/render · diff-base · init
-├── tests/cli.test.ts                spawn-based integration
-└── tsup.config.ts                   ESM single-file bundle (node20)
+│   ├── main.rs                      clap entry (init / render / diff-base)
+│   ├── base_resolver.rs             --base / --base-url / bundled cascade
+│   ├── commands/                    init.rs · render.rs · diff_base.rs
+│   ├── diff.rs · patch.rs           drift detection + YAML I/O
+│   ├── serializer.rs · tree.rs      Targets emission + path helpers
+│   └── types.rs                     Catalog / Node / Probe mirroring core
+├── tests/cli_integration.rs         assert_cmd + tempfile
+├── build.rs                         embeds catalog.json via include_str!
+└── Cargo.toml                       release profile: strip, lto, opt-level=z
 ```
 
 ## Deployment
@@ -128,7 +148,7 @@ Push to `main` / `master` — GitHub Actions builds `packages/web/` and deploys 
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add curated targets, new probe kinds, defaults, or translations. TL;DR: edit `config.txt` and run `npm run build` to regenerate `packages/core/src/catalog.json`.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add curated targets, new probe kinds, defaults, or translations. TL;DR: edit `config.txt` and run `npm run build` to regenerate `packages/core/src/catalog.json`; rerun `cargo build --release` inside `packages/cli-rs/` to re-embed it into the binary.
 
 ## License
 
