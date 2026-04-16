@@ -12,7 +12,7 @@ use clap::{Parser, Subcommand};
 
 use base_resolver::bundled_version;
 
-const CLI_VERSION: &str = "0.1.0";
+const CLI_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn full_version() -> String {
     let cat_part = match bundled_version() {
