@@ -5,7 +5,7 @@ use assert_cmd::Command;
 use tempfile::TempDir;
 
 fn cli() -> Command {
-    Command::cargo_bin("smokepingconf").unwrap()
+    Command::cargo_bin("smokeping-config").unwrap()
 }
 
 fn catalog_json() -> &'static str {
@@ -76,7 +76,7 @@ fn write_patch(dir: &TempDir, name: &str, contents: &str) -> PathBuf {
 fn version_prints_cli_and_bundled_catalog_stamp() {
     let out = cli().arg("--version").output().unwrap();
     let stdout = String::from_utf8(out.stdout).unwrap();
-    assert!(stdout.contains("smokepingconf v"));
+    assert!(stdout.contains("smokeping-config v"));
     assert!(stdout.contains("bundled catalog"));
 }
 

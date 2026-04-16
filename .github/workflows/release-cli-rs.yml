@@ -17,23 +17,23 @@ jobs:
         include:
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-            artifact: smokepingconf-linux-x86_64
+            artifact: smokeping-config-linux-x86_64
             cross: true
           - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
-            artifact: smokepingconf-linux-aarch64
+            artifact: smokeping-config-linux-aarch64
             cross: true
           - target: x86_64-apple-darwin
             os: macos-latest
-            artifact: smokepingconf-macos-x86_64
+            artifact: smokeping-config-macos-x86_64
             cross: false
           - target: aarch64-apple-darwin
             os: macos-latest
-            artifact: smokepingconf-macos-aarch64
+            artifact: smokeping-config-macos-aarch64
             cross: false
           - target: x86_64-pc-windows-msvc
             os: windows-latest
-            artifact: smokepingconf-windows-x86_64.exe
+            artifact: smokeping-config-windows-x86_64.exe
             cross: false
 
     runs-on: ${{ matrix.os }}
@@ -79,7 +79,7 @@ jobs:
           TARGET: ${{ matrix.target }}
           ARTIFACT: ${{ matrix.artifact }}
         run: |
-          src="packages/cli-rs/target/${TARGET}/release/smokepingconf"
+          src="packages/cli-rs/target/${TARGET}/release/smokeping-config"
           cp "$src" "${ARTIFACT}"
           chmod +x "${ARTIFACT}"
 
@@ -90,7 +90,7 @@ jobs:
           TARGET: ${{ matrix.target }}
           ARTIFACT: ${{ matrix.artifact }}
         run: |
-          src="packages/cli-rs/target/${TARGET}/release/smokepingconf.exe"
+          src="packages/cli-rs/target/${TARGET}/release/smokeping-config.exe"
           cp "$src" "${ARTIFACT}"
 
       - uses: actions/upload-artifact@v7

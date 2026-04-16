@@ -25,7 +25,7 @@ pub fn run_init(out: &str, force: bool) -> i32 {
     let body = match patch_to_yaml(&starter) {
         Ok(y) => y,
         Err(e) => {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     };
@@ -34,8 +34,8 @@ pub fn run_init(out: &str, force: bool) -> i32 {
 # SmokePing config builder — patch file.
 #
 # Pin: this patch was initialised against the catalogue snapshot identified
-# by `baseVersion`. Running `smokepingconf render <this-file>` applies the
-# patch on top of that base. When upstream evolves, `smokepingconf diff-base`
+# by `baseVersion`. Running `smokeping-config render <this-file>` applies the
+# patch on top of that base. When upstream evolves, `smokeping-config diff-base`
 # reports which of your paths drifted.
 #
 # Example edits — uncomment and adjust:
@@ -72,7 +72,7 @@ pub fn run_init(out: &str, force: bool) -> i32 {
             Ok(mut f) => {
                 let content = format!("{}{}", header, body);
                 if let Err(e) = f.write_all(content.as_bytes()) {
-                    eprintln!("smokepingconf: {}", e);
+                    eprintln!("smokeping-config: {}", e);
                     return 1;
                 }
             }
@@ -81,14 +81,14 @@ pub fn run_init(out: &str, force: bool) -> i32 {
                 return 1;
             }
             Err(e) => {
-                eprintln!("smokepingconf: {}", e);
+                eprintln!("smokeping-config: {}", e);
                 return 1;
             }
         }
     } else {
         let content = format!("{}{}", header, body);
         if let Err(e) = fs::write(&abs, &content) {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     }

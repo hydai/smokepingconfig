@@ -57,5 +57,5 @@ jobs:
       - name: Verify binary runs
         working-directory: packages/cli-rs
         run: |
-          ./target/release/smokepingconf --version
-          ./target/release/smokepingconf --help
+          ./target/release/smokeping-config --version
+          ./target/release/smokeping-config --help

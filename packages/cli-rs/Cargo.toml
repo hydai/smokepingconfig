@@ -1,5 +1,5 @@
 [package]
-name = "smokepingconf"
+name = "smokeping-config"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
@@ -7,7 +7,7 @@ license = "MIT"
 description = "SmokePing config builder — render Targets files from a committable patch YAML on top of a versioned base catalogue"
 
 [[bin]]
-name = "smokepingconf"
+name = "smokeping-config"
 path = "src/main.rs"
 
 [dependencies]

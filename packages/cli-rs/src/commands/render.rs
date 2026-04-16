@@ -44,7 +44,7 @@ pub fn run_render(
     let catalog = match resolve_base(base, base_url) {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     };
@@ -52,7 +52,7 @@ pub fn run_render(
     let patch_text = match read_patch_file(patch_path) {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     };
@@ -60,7 +60,7 @@ pub fn run_render(
     let patch = match patch_from_yaml(&patch_text) {
         Ok(p) => p,
         Err(e) => {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     };
@@ -102,7 +102,7 @@ pub fn run_render(
                 .to_string()
         };
         if let Err(e) = fs::write(&abs, &targets) {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
         eprintln!("render: wrote {} ({} bytes)", out_path, targets.len());

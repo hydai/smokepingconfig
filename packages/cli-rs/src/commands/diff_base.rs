@@ -13,7 +13,7 @@ pub fn run_diff_base(
     let catalog = match resolve_base(base, base_url) {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     };
@@ -30,7 +30,7 @@ pub fn run_diff_base(
     let patch_text = match fs::read_to_string(&abs) {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("smokepingconf: {}: {}", patch_path, e);
+            eprintln!("smokeping-config: {}: {}", patch_path, e);
             return 1;
         }
     };
@@ -38,7 +38,7 @@ pub fn run_diff_base(
     let patch = match patch_from_yaml(&patch_text) {
         Ok(p) => p,
         Err(e) => {
-            eprintln!("smokepingconf: {}", e);
+            eprintln!("smokeping-config: {}", e);
             return 1;
         }
     };

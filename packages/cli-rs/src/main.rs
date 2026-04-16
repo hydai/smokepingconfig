@@ -19,12 +19,12 @@ fn full_version() -> String {
         Some(v) => format!("bundled catalog {} @ {}", v.date, v.sha),
         None => "bundled catalog unknown".to_string(),
     };
-    format!("smokepingconf v{}\n{}", CLI_VERSION, cat_part)
+    format!("smokeping-config v{}\n{}", CLI_VERSION, cat_part)
 }
 
 #[derive(Parser)]
 #[command(
-    name = "smokepingconf",
+    name = "smokeping-config",
     about = "SmokePing config builder — render Targets files from a committable patch YAML on top of a versioned base catalogue",
     version = CLI_VERSION,
     disable_version_flag = true,
@@ -104,7 +104,7 @@ fn main() {
         Some(c) => c,
         None => {
             // No subcommand and no --version: print help
-            Cli::parse_from(["smokepingconf", "--help"]);
+            Cli::parse_from(["smokeping-config", "--help"]);
             process::exit(0);
         }
     };
