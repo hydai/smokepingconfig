@@ -217,42 +217,63 @@ with [npm provenance](https://docs.npmjs.com/generating-provenance-statements).
 
 ### Releasing the Rust CLI
 
-`packages/cli-rs/` ships on two channels in parallel, both driven by the
-`.github/workflows/release-cli-rs.yml` workflow on tags matching
-`cli-rs-v*`:
+`packages/cli-rs/` ships on two channels — GitHub Releases (prebuilt
+static binaries for Linux musl x86_64/aarch64, macOS x86_64/aarch64,
+Windows MSVC x86_64) and crates.io — both driven by conventional-commit
+automation. No developer ever edits `Cargo.toml`'s `version` field
+directly.
 
-1. **GitHub Releases** — a prebuilt static binary per target
-   (Linux musl x86_64/aarch64, macOS x86_64/aarch64, Windows MSVC x86_64),
-   assembled by the `build` + `release` jobs.
-2. **crates.io** — the source crate, assembled by the `publish-crate`
-   job via `cargo publish`. Auth uses [Trusted Publishing][tp] over OIDC
-   — no long-lived `CARGO_REGISTRY_TOKEN` secret to rotate; the
-   [`rust-lang/crates-io-auth-action`][auth-action] exchanges GitHub's
-   OIDC token for a ~30-minute crates.io token that is auto-revoked
-   when the job finishes.
+**How it works** ([knope] 0.22.2, [Trusted Publishing][tp] via
+[`rust-lang/crates-io-auth-action`][auth-action]):
 
+1. Merge `feat(cli-rs):` / `fix(cli-rs):` commits to `master`. Other
+   scopes (`feat(web):`, `fix(core):`) are ignored for Rust CLI
+   releases thanks to `scopes = ["cli-rs"]` in `knope.toml`.
+2. `.github/workflows/prepare-release-cli-rs.yml` runs on every push to
+   master, notices there are unreleased conventional commits, and
+   opens a release PR on the `release-cli-rs` branch with:
+   - `packages/cli-rs/Cargo.toml` bumped (major/minor/patch per the
+     commit types)
+   - `packages/cli-rs/CHANGELOG.md` updated
+   - Title: `chore: release smokeping-config X.Y.Z`
+3. Review + merge the PR.
+4. `.github/workflows/release-cli-rs.yml` fires on the merged PR:
+   - Builds 5 target binaries in parallel
+   - `knope release` creates the `smokeping-config/vX.Y.Z` tag and the
+     GitHub Release with all 5 binaries attached
+   - `publish-crate` OIDC-publishes the source crate to crates.io
+
+[knope]: https://knope.tech/
 [tp]: https://crates.io/docs/trusted-publishing
 [auth-action]: https://github.com/rust-lang/crates-io-auth-action
 
-One-time setup (already done): on <https://crates.io/crates/smokeping-config/settings>
-add a Trusted Publisher with repository `hydai/smokepingconfig` and
-workflow `release-cli-rs.yml`.
+**One-time maintainer setup** (already done):
 
-To cut a release:
+- Registered a Trusted Publisher at
+  <https://crates.io/crates/smokeping-config/settings> pointing at
+  repository `hydai/smokepingconfig` + workflow `release-cli-rs.yml`.
+- Bootstrap tag so knope has a baseline:
+  ```sh
+  git tag smokeping-config/v0.1.0 $(git rev-list -n 1 cli-rs-v0.1.0)
+  git push origin smokeping-config/v0.1.0
+  ```
 
-```sh
-# Bump version in Cargo.toml, commit, tag, push.
-vim packages/cli-rs/Cargo.toml          # edit version = "..."
-git commit -am "chore(cli-rs): bump version to X.Y.Z"
-git push origin master
-git push origin cli-rs-vX.Y.Z
-```
+**Smoke-testing without releasing**: `workflow_dispatch` on
+`release-cli-rs.yml` runs the build matrix only (the `release` and
+`publish-crate` jobs are gated on the merged PR). For packaging
+changes, run `cargo publish --dry-run --allow-dirty` locally from
+`packages/cli-rs/` after `cp ../core/src/catalog.json .`.
 
-The `publish-crate` job verifies the tag matches `Cargo.toml`, stages
-`catalog.json` (which is gitignored inside the crate), and runs
-`cargo publish --allow-dirty`. A `workflow_dispatch` run exercises the
-same job in `--dry-run` mode so you can smoke-test packaging changes
-without touching the registry.
+**Commit prefix cheatsheet** (scope must be `cli-rs` to count for the
+Rust CLI release):
+
+| Prefix           | Version bump |
+|------------------|--------------|
+| `feat(cli-rs):`  | minor        |
+| `fix(cli-rs):`   | patch        |
+| `feat(cli-rs)!:` | major        |
+| `fix(cli-rs)!:`  | major        |
+| `chore(cli-rs):`, `ci(cli-rs):`, `docs(cli-rs):` | no bump, not in changelog |
 
 ## Feature ideas
 
