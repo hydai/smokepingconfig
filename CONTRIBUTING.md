@@ -6,11 +6,11 @@ change to the right workspace and the exact files you'll touch.
 
 ## Monorepo layout
 
-| Package                  | Where                  | What lives here                                                                  |
-| ------------------------ | ---------------------- | -------------------------------------------------------------------------------- |
-| `@smokepingconf/core`    | `packages/core/`       | Pure logic: types, parser / serializer, probes, tree helpers, patch model.       |
-| `@smokepingconf/web`     | `packages/web/`        | SvelteKit app — tree editor, Import/Export Patch modal, share URL, i18n.         |
-| `@smokepingconf/cli`     | `packages/cli/`        | `commander` CLI — `render`, `diff-base`, `init`. Bundled via tsup.               |
+| Package               | Where            | What lives here                                                            |
+| --------------------- | ---------------- | -------------------------------------------------------------------------- |
+| `@smokepingconf/core` | `packages/core/` | Pure logic: types, parser / serializer, probes, tree helpers, patch model. |
+| `@smokepingconf/web`  | `packages/web/`  | SvelteKit app — tree editor, Import/Export Patch modal, share URL, i18n.   |
+| `@smokepingconf/cli`  | `packages/cli/`  | `commander` CLI — `render`, `diff-base`, `init`. Bundled via tsup.         |
 
 The curated catalogue source of truth is `config.txt` at the repo root.
 `npm run build` regenerates `packages/core/src/catalog.json`, stamped with
@@ -18,15 +18,15 @@ The curated catalogue source of truth is `config.txt` at the repo root.
 
 ## Where do I add what?
 
-| I want to add…                                                      | Go to                                                    |
-| ------------------------------------------------------------------- | -------------------------------------------------------- |
-| A new CDN, ISP, cloud, or other preset target                       | [Curated catalogue entries](#curated-catalogue-entries)  |
-| A new SmokePing probe kind                                          | [Probe kinds](#probe-kinds)                              |
-| A new default menu / title / starter-node seed                      | [Root-level defaults](#root-level-defaults)              |
-| A new UI string or translation fix                                  | [i18n strings](#i18n-strings)                            |
-| A patch-schema field (new top-level key, new per-node attribute)    | [Patch schema changes](#patch-schema-changes)            |
-| A new CLI subcommand or flag                                        | [CLI development](#cli-development)                      |
-| A user-facing feature (saved presets, alerts, etc.)                 | [Feature ideas](#feature-ideas)                          |
+| I want to add…                                                   | Go to                                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------------- |
+| A new CDN, ISP, cloud, or other preset target                    | [Curated catalogue entries](#curated-catalogue-entries) |
+| A new SmokePing probe kind                                       | [Probe kinds](#probe-kinds)                             |
+| A new default menu / title / starter-node seed                   | [Root-level defaults](#root-level-defaults)             |
+| A new UI string or translation fix                               | [i18n strings](#i18n-strings)                           |
+| A patch-schema field (new top-level key, new per-node attribute) | [Patch schema changes](#patch-schema-changes)           |
+| A new CLI subcommand or flag                                     | [CLI development](#cli-development)                     |
+| A user-facing feature (saved presets, alerts, etc.)              | [Feature ideas](#feature-ideas)                         |
 
 ## Dev setup
 
@@ -190,8 +190,8 @@ When adding a command:
 2. Register it in `packages/cli/src/index.ts`.
 3. Add integration tests in `packages/cli/tests/cli.test.ts` that spawn
    the built `dist/index.js` via `spawnSync` and assert exit code + stdout
-   + stderr. Use `encodePatch` + `patchToYaml` to generate fixture
-   patches pinned to the bundled catalog's current `{date, sha}`.
+   - stderr. Use `encodePatch` + `patchToYaml` to generate fixture
+     patches pinned to the bundled catalog's current `{date, sha}`.
 
 ### Releasing the CLI
 
@@ -239,8 +239,9 @@ PRs welcome for these — open an issue first if they're non-trivial.
   by package where useful: `feat(core):`, `feat(web):`, `feat(cli):`.
 - One concern per commit — split logically.
 - Branch off `master`; open PRs against `master`.
-- CI runs lint, unit tests across all three packages, build, and E2E on
-  every PR.
+- CI runs lint (`prettier --check` + `eslint`), type checking
+  (`npm run check`), unit tests across all three packages, build, and
+  E2E on every PR.
 - The GitHub Pages deploy runs on push to `main` / `master` and
   regenerates `catalog.json` itself, so a slightly stale committed copy
   won't block deployment — but please still run `npm run build` locally
@@ -251,7 +252,7 @@ PRs welcome for these — open an issue first if they're non-trivial.
 Copy this into your PR description:
 
 ```
-- [ ] Ran `npm run check && npm test`
+- [ ] Ran `npm run lint && npm run check && npm test`
 - [ ] Ran `npm run build` (regenerates `packages/core/src/catalog.json` if `config.txt` changed)
 - [ ] Ran `npm run test:e2e` if UI behaviour changed
 - [ ] Updated i18n keys in both `en.json` and `zh-TW.json`
