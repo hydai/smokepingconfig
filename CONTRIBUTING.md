@@ -215,6 +215,45 @@ The workflow verifies the tag matches `packages/cli/package.json` before
 publishing, reruns the CLI test suite as a last-mile gate, and publishes
 with [npm provenance](https://docs.npmjs.com/generating-provenance-statements).
 
+### Releasing the Rust CLI
+
+`packages/cli-rs/` ships on two channels in parallel, both driven by the
+`.github/workflows/release-cli-rs.yml` workflow on tags matching
+`cli-rs-v*`:
+
+1. **GitHub Releases** — a prebuilt static binary per target
+   (Linux musl x86_64/aarch64, macOS x86_64/aarch64, Windows MSVC x86_64),
+   assembled by the `build` + `release` jobs.
+2. **crates.io** — the source crate, assembled by the `publish-crate`
+   job via `cargo publish`. Auth uses [Trusted Publishing][tp] over OIDC
+   — no long-lived `CARGO_REGISTRY_TOKEN` secret to rotate; the
+   [`rust-lang/crates-io-auth-action`][auth-action] exchanges GitHub's
+   OIDC token for a ~30-minute crates.io token that is auto-revoked
+   when the job finishes.
+
+[tp]: https://crates.io/docs/trusted-publishing
+[auth-action]: https://github.com/rust-lang/crates-io-auth-action
+
+One-time setup (already done): on <https://crates.io/crates/smokeping-config/settings>
+add a Trusted Publisher with repository `hydai/smokepingconfig` and
+workflow `release-cli-rs.yml`.
+
+To cut a release:
+
+```sh
+# Bump version in Cargo.toml, commit, tag, push.
+vim packages/cli-rs/Cargo.toml          # edit version = "..."
+git commit -am "chore(cli-rs): bump version to X.Y.Z"
+git push origin master
+git push origin cli-rs-vX.Y.Z
+```
+
+The `publish-crate` job verifies the tag matches `Cargo.toml`, stages
+`catalog.json` (which is gitignored inside the crate), and runs
+`cargo publish --allow-dirty`. A `workflow_dispatch` run exercises the
+same job in `--dry-run` mode so you can smoke-test packaging changes
+without touching the registry.
+
 ## Feature ideas
 
 PRs welcome for these — open an issue first if they're non-trivial.

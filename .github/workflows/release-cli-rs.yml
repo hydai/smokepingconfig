@@ -113,3 +113,58 @@ jobs:
         with:
           files: artifacts/*
           generate_release_notes: true
+
+  publish-crate:
+    needs: build
+    runs-on: ubuntu-latest
+    # Required so GitHub issues the OIDC token that
+    # `rust-lang/crates-io-auth-action` exchanges for a crates.io token.
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Generate fresh catalog.json
+        run: |
+          npm ci
+          npm -w @smokepingconf/core run prebuild
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Verify tag matches Cargo.toml version
+        if: startsWith(github.ref, 'refs/tags/cli-rs-v')
+        env:
+          TAG_REF: ${{ github.ref_name }}
+        run: |
+          TAG_VERSION="${TAG_REF#cli-rs-v}"
+          PKG_VERSION=$(cargo metadata --format-version 1 --no-deps --manifest-path packages/cli-rs/Cargo.toml | jq -r '.packages[0].version')
+          echo "tag=$TAG_VERSION pkg=$PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag $TAG_REF ($TAG_VERSION) does not match packages/cli-rs/Cargo.toml ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Stage catalog.json for crates.io tarball
+        run: cp packages/core/src/catalog.json packages/cli-rs/catalog.json
+
+      - name: Cargo publish (dry-run)
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: packages/cli-rs
+        run: cargo publish --dry-run --allow-dirty
+
+      - name: Authenticate to crates.io (trusted publishing)
+        if: startsWith(github.ref, 'refs/tags/cli-rs-v')
+        id: crates-auth
+        uses: rust-lang/crates-io-auth-action@v1
+
+      - name: Cargo publish
+        if: startsWith(github.ref, 'refs/tags/cli-rs-v')
+        working-directory: packages/cli-rs
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.crates-auth.outputs.token }}
+        run: cargo publish --allow-dirty
