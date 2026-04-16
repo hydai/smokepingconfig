@@ -1,0 +1,39 @@
+[packages.smokeping-config]
+versioned_files = ["packages/cli-rs/Cargo.toml"]
+changelog = "packages/cli-rs/CHANGELOG.md"
+scopes = ["cli-rs"]
+assets = "artifacts/*"
+
+[github]
+owner = "hydai"
+repo = "smokepingconfig"
+
+[[workflows]]
+name = "prepare-release"
+
+[[workflows.steps]]
+type = "Command"
+command = "git switch -c release-cli-rs"
+
+[[workflows.steps]]
+type = "PrepareRelease"
+
+[[workflows.steps]]
+type = "Command"
+command = "git commit -m 'chore: prepare smokeping-config release' --signoff --all"
+
+[[workflows.steps]]
+type = "Command"
+command = "git push --force --set-upstream origin release-cli-rs"
+
+[[workflows.steps]]
+type = "CreatePullRequest"
+base = "master"
+title = "chore: release smokeping-config $version"
+body = "$changelog"
+
+[[workflows]]
+name = "release"
+
+[[workflows.steps]]
+type = "Release"
