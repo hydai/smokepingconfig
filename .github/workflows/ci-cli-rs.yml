@@ -1,0 +1,61 @@
+name: CI (Rust CLI)
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'packages/cli-rs/**'
+      - 'packages/core/src/catalog.json'
+      - 'config.txt'
+      - '.github/workflows/ci-cli-rs.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'packages/cli-rs/**'
+      - 'packages/core/src/catalog.json'
+      - 'config.txt'
+      - '.github/workflows/ci-cli-rs.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Generate fresh catalog.json
+        run: |
+          npm ci
+          npm -w @smokepingconf/core run prebuild
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: packages/cli-rs
+
+      - name: Check formatting
+        working-directory: packages/cli-rs
+        run: cargo fmt --check
+
+      - name: Clippy
+        working-directory: packages/cli-rs
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Run tests
+        working-directory: packages/cli-rs
+        run: cargo test --release
+
+      - name: Build release binary
+        working-directory: packages/cli-rs
+        run: cargo build --release
+
+      - name: Verify binary runs
+        working-directory: packages/cli-rs
+        run: |
+          ./target/release/smokepingconf --version
+          ./target/release/smokepingconf --help

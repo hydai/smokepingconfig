@@ -1,0 +1,111 @@
+name: Release Rust CLI
+
+on:
+  push:
+    tags:
+      - 'cli-rs-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            artifact: smokepingconf-linux-x86_64
+            cross: true
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
+            artifact: smokepingconf-linux-aarch64
+            cross: true
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            artifact: smokepingconf-macos-x86_64
+            cross: false
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            artifact: smokepingconf-macos-aarch64
+            cross: false
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            artifact: smokepingconf-windows-x86_64.exe
+            cross: false
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Generate fresh catalog.json
+        run: |
+          npm ci
+          npm -w @smokepingconf/core run prebuild
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install cross (for musl targets)
+        if: matrix.cross
+        run: cargo install cross --locked
+
+      - name: Build (cross)
+        if: matrix.cross
+        working-directory: packages/cli-rs
+        run: cross build --release --target ${{ matrix.target }}
+
+      - name: Build (native)
+        if: '!matrix.cross'
+        working-directory: packages/cli-rs
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package artifact (Unix)
+        if: matrix.os != 'windows-latest'
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          ARTIFACT: ${{ matrix.artifact }}
+        run: |
+          src="packages/cli-rs/target/${TARGET}/release/smokepingconf"
+          cp "$src" "${ARTIFACT}"
+          chmod +x "${ARTIFACT}"
+
+      - name: Package artifact (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          ARTIFACT: ${{ matrix.artifact }}
+        run: |
+          src="packages/cli-rs/target/${TARGET}/release/smokepingconf.exe"
+          cp "$src" "${ARTIFACT}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/cli-rs-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
