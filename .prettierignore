@@ -1,5 +1,6 @@
 packages/web/build/
 packages/web/.svelte-kit/
 packages/cli/dist/
+packages/cli-rs/
 packages/core/src/catalog.json
 package-lock.json

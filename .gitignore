@@ -12,3 +12,6 @@ dist
 coverage
 playwright-report
 test-results
+
+# Rust
+/packages/cli-rs/target/
