@@ -10,7 +10,7 @@ export const PROBE_KINDS: readonly ProbeKind[] = [
   'DNS',
   'EchoPingHttp',
   'EchoPingHttps',
-  'EchoPingPlugin'
+  'EchoPingPlugin',
 ] as const;
 
 export type FieldType = 'text' | 'number' | 'select';
@@ -39,7 +39,7 @@ const DNS_RECORD_OPTIONS = [
   { label: 'AAAA', value: 'AAAA' },
   { label: 'MX', value: 'MX' },
   { label: 'TXT', value: 'TXT' },
-  { label: 'NS', value: 'NS' }
+  { label: 'NS', value: 'NS' },
 ] as const;
 
 export const PROBE_META: Record<ProbeKind, ProbeMeta> = {
@@ -50,7 +50,7 @@ export const PROBE_META: Record<ProbeKind, ProbeMeta> = {
     fields: [],
     probesSnippet: `+ FPing
 binary = /usr/sbin/fping
-`
+`,
   },
   DNS: {
     kind: 'DNS',
@@ -58,12 +58,12 @@ binary = /usr/sbin/fping
     description: 'DNS lookup latency against a resolver.',
     fields: [
       { key: 'lookup', label: 'Lookup', type: 'text', placeholder: 'www.example.com' },
-      { key: 'recordType', label: 'Record type', type: 'select', options: DNS_RECORD_OPTIONS }
+      { key: 'recordType', label: 'Record type', type: 'select', options: DNS_RECORD_OPTIONS },
     ],
     probesSnippet: `+ DNS
 binary = /usr/bin/dig
 lookup = www.example.com
-`
+`,
   },
   EchoPingHttp: {
     kind: 'EchoPingHttp',
@@ -75,12 +75,12 @@ lookup = www.example.com
         label: 'URL',
         type: 'text',
         placeholder: 'http://example.com/',
-        required: true
-      }
+        required: true,
+      },
     ],
     probesSnippet: `+ EchoPingHttp
 binary = /usr/bin/echoping
-`
+`,
   },
   EchoPingHttps: {
     kind: 'EchoPingHttps',
@@ -92,12 +92,12 @@ binary = /usr/bin/echoping
         label: 'URL',
         type: 'text',
         placeholder: 'https://example.com/',
-        required: true
-      }
+        required: true,
+      },
     ],
     probesSnippet: `+ EchoPingHttps
 binary = /usr/bin/echoping
-`
+`,
   },
   EchoPingPlugin: {
     kind: 'EchoPingPlugin',
@@ -109,14 +109,14 @@ binary = /usr/bin/echoping
         label: 'Port',
         type: 'number',
         placeholder: '80',
-        required: true
-      }
+        required: true,
+      },
     ],
     probesSnippet: `+ EchoPingPlugin
 binary = /usr/bin/echoping
 forks = 5
-`
-  }
+`,
+  },
 };
 
 export function defaultProbe(kind: ProbeKind): Probe {
@@ -143,7 +143,7 @@ export function probeToFields(probe: Probe | undefined): Record<string, string> 
     case 'DNS':
       return {
         lookup: probe.lookup ?? '',
-        recordType: probe.recordType ?? ''
+        recordType: probe.recordType ?? '',
       };
     case 'EchoPingHttp':
     case 'EchoPingHttps':
@@ -156,7 +156,7 @@ export function probeToFields(probe: Probe | undefined): Record<string, string> 
 // Inverse of probeToFields. Returns undefined for 'inherit' (empty kind).
 export function fieldsToProbe(
   kind: ProbeKind | '',
-  fields: Record<string, string>
+  fields: Record<string, string>,
 ): Probe | undefined {
   if (kind === '') return undefined;
   switch (kind) {

@@ -5,7 +5,7 @@ import {
   defaultProbe,
   fieldsToProbe,
   probeToFields,
-  probesFileSnippet
+  probesFileSnippet,
 } from '../src/probes.js';
 import type { Node } from '../src/types.js';
 
@@ -17,7 +17,7 @@ function leaf(partial: Partial<Node> & { id: string; name: string }): Node {
     title: partial.name,
     included: true,
     children: [],
-    ...partial
+    ...partial,
   };
 }
 
@@ -43,7 +43,7 @@ describe('probeToFields / fieldsToProbe round-trip', () => {
     expect(fieldsToProbe('DNS', fields)).toEqual({
       kind: 'DNS',
       lookup: 'example.com',
-      recordType: 'AAAA'
+      recordType: 'AAAA',
     });
   });
 
@@ -51,14 +51,14 @@ describe('probeToFields / fieldsToProbe round-trip', () => {
     const f = probeToFields({ kind: 'EchoPingHttps', url: 'https://a.test/' });
     expect(fieldsToProbe('EchoPingHttps', f)).toEqual({
       kind: 'EchoPingHttps',
-      url: 'https://a.test/'
+      url: 'https://a.test/',
     });
   });
 
   it('pingport coerces to number', () => {
     expect(fieldsToProbe('EchoPingPlugin', { pingport: '443' })).toEqual({
       kind: 'EchoPingPlugin',
-      pingport: 443
+      pingport: 443,
     });
   });
 
@@ -85,8 +85,8 @@ describe('collectUsedProbes', () => {
         title: 'C',
         included: true,
         probe: { kind: 'EchoPingHttp', url: '' },
-        children: [leaf({ id: 'x:C/D', name: 'D' })]
-      }
+        children: [leaf({ id: 'x:C/D', name: 'D' })],
+      },
     ];
     const used = collectUsedProbes(nodes, 'FPing');
     expect(used).toEqual(new Set(['FPing', 'DNS', 'EchoPingHttp']));

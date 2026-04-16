@@ -9,12 +9,12 @@ const config = {
       pages: 'build',
       assets: 'build',
       fallback: '404.html',
-      strict: true
+      strict: true,
     }),
     paths: {
-      base: process.env.BASE_PATH ?? ''
-    }
-  }
+      base: process.env.BASE_PATH ?? '',
+    },
+  },
 };
 
 export default config;

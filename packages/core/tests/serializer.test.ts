@@ -9,7 +9,7 @@ describe('serializeCatalog', () => {
     const catalog: Catalog = {
       schemaVer: 2,
       root: { probe: 'FPing', menu: 'Top', title: 'Network Latency Grapher' },
-      nodes: []
+      nodes: [],
     };
     const text = serializeCatalog(catalog);
     expect(text).toContain('*** Targets ***');
@@ -41,11 +41,11 @@ describe('serializeCatalog', () => {
               title: 'B',
               included: true,
               host: '1.2.3.4',
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+            },
+          ],
+        },
+      ],
     };
     const text = serializeCatalog(catalog);
     expect(text).toMatch(/^\+ A$/m);
@@ -67,9 +67,9 @@ describe('serializeCatalog', () => {
           title: 'A',
           included: false,
           host: '1.1.1.1',
-          children: []
-        }
-      ]
+          children: [],
+        },
+      ],
     };
     const text = serializeCatalog(catalog);
     expect(text).not.toContain('+ A');
@@ -91,9 +91,9 @@ describe('serializeCatalog', () => {
           included: true,
           host: 'example.com',
           probe: { kind: 'EchoPingHttps', url: 'https://example.com/' },
-          children: []
-        }
-      ]
+          children: [],
+        },
+      ],
     };
     const text = serializeCatalog(catalog);
     expect(text).toContain('probe = EchoPingHttps');
@@ -133,7 +133,7 @@ describe('serializeCatalog', () => {
                   title: 'HiNet',
                   included: true,
                   host: '1.1.1.1',
-                  children: []
+                  children: [],
                 },
                 {
                   id: 'c:Asia/Taiwan/TWM',
@@ -144,13 +144,13 @@ describe('serializeCatalog', () => {
                   title: 'TWM',
                   included: true,
                   host: '2.2.2.2',
-                  children: []
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
     const text = serializeCatalog(catalog);
     expect(text).toMatch(/^host = \/Asia\/Taiwan\/HiNet \/Asia\/Taiwan\/TWM$/m);
@@ -171,9 +171,9 @@ describe('serializeCatalog', () => {
           included: true,
           host: '1.1.1.1',
           extraAttrs: { alerts: 'bigloss', pings: '20' },
-          children: []
-        }
-      ]
+          children: [],
+        },
+      ],
     };
     const text = serializeCatalog(catalog);
     expect(text).toContain('alerts = bigloss');

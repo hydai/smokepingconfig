@@ -15,7 +15,7 @@ import {
   setIncluded,
   setLanguage,
   tree,
-  walkNodes
+  walkNodes,
 } from '../../src/lib/store.js';
 
 beforeEach(() => {
@@ -163,7 +163,7 @@ describe('patch export / import round-trip', () => {
       '  date: "2020-01-01"',
       '  sha: aaaaaaa',
       'excluded:',
-      '  - /CDN/DoesNotExist'
+      '  - /CDN/DoesNotExist',
     ].join('\n');
     const { drift } = previewPatchYaml(patchYaml);
     expect(drift.missingPaths).toContain('/CDN/DoesNotExist');

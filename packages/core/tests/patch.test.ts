@@ -8,7 +8,7 @@ import {
   encodePatchToHash,
   patchFromYaml,
   patchToYaml,
-  readHashSlug
+  readHashSlug,
 } from '../src/patch.js';
 import { findNode, freshTree } from '../src/tree.js';
 import { encodeTree } from '../src/url-state.js';
@@ -35,9 +35,9 @@ function customHome(): Node {
         title: 'Router',
         included: true,
         host: 'router.local',
-        children: []
-      }
-    ]
+        children: [],
+      },
+    ],
   };
 }
 

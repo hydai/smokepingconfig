@@ -118,9 +118,9 @@ describe('pathToId', () => {
           title: 'Router',
           included: true,
           host: '192.168.1.1',
-          children: []
-        }
-      ]
+          children: [],
+        },
+      ],
     };
     t.nodes.push(customCat);
     expect(pathToId(t.nodes, '/Home')).toBe('x:home-123');

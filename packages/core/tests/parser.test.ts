@@ -28,7 +28,7 @@ describe('parseTargets', () => {
       'Asia',
       'DNS',
       'DNSProbes',
-      'Hosting'
+      'Hosting',
     ]);
   });
 
@@ -57,7 +57,7 @@ describe('parseTargets', () => {
       '/Asia/Taiwan/TWM',
       '/Asia/Taiwan/Seednet',
       '/Asia/Taiwan/SoNet',
-      '/Asia/Taiwan/APTG'
+      '/Asia/Taiwan/APTG',
     ]);
   });
 

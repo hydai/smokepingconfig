@@ -40,7 +40,7 @@ test.describe('SmokePing Config Builder — core flow', () => {
     await page.goto('/');
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.getByRole('button', { name: 'Download', exact: true }).click()
+      page.getByRole('button', { name: 'Download', exact: true }).click(),
     ]);
     // Chromium appends ".txt" to text/plain downloads; Firefox leaves it as-is.
     expect(['Targets', 'Targets.txt']).toContain(download.suggestedFilename());
@@ -75,7 +75,7 @@ test.describe('SmokePing Config Builder — core flow', () => {
     // 2. Export patch.yaml.
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.getByRole('button', { name: 'Export patch', exact: true }).click()
+      page.getByRole('button', { name: 'Export patch', exact: true }).click(),
     ]);
     expect(['patch.yaml', 'patch.yaml.txt']).toContain(download.suggestedFilename());
     const downloadPath = await download.path();

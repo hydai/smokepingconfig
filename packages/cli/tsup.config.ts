@@ -27,5 +27,5 @@ export default defineConfig({
   // the executable bit automatically when installing a package with a `bin`
   // field, and Node's loader skips the first line when the file is invoked
   // as a script.
-  banner: { js: '#!/usr/bin/env node' }
+  banner: { js: '#!/usr/bin/env node' },
 });

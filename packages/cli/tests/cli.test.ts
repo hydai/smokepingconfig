@@ -6,13 +6,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import catalogJson from '@smokepingconf/core/catalog.json';
-import {
-  encodePatch,
-  findNode,
-  freshTree,
-  patchToYaml,
-  type Catalog
-} from '@smokepingconf/core';
+import { encodePatch, findNode, freshTree, patchToYaml, type Catalog } from '@smokepingconf/core';
 
 const CLI = resolve(fileURLToPath(new URL('.', import.meta.url)), '../dist/index.js');
 const catalog = catalogJson as Catalog;

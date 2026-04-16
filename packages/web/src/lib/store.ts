@@ -28,7 +28,7 @@ import {
   type DriftReport,
   type Language,
   type Node,
-  type WorkingTree
+  type WorkingTree,
 } from '@smokepingconf/core';
 
 export { findNode, walkNodes };
@@ -212,7 +212,7 @@ export function newCustomCategory(): Node {
     menu: 'New category',
     title: 'New category',
     included: true,
-    children: []
+    children: [],
   };
 }
 
@@ -226,7 +226,7 @@ export function newCustomTarget(): Node {
     title: 'New target',
     included: true,
     children: [],
-    host: ''
+    host: '',
   };
 }
 
@@ -234,7 +234,7 @@ export function newCustomTarget(): Node {
 // { id, path, menu } triples. Useful for the comparison-graph picker.
 export function listDescendants(
   nodes: Node[],
-  id: string
+  id: string,
 ): { id: string; path: string; menu: string }[] {
   const root = findNode(nodes, id);
   if (!root) return [];

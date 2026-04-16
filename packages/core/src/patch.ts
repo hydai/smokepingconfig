@@ -24,7 +24,7 @@ import type {
   NodeType,
   Probe,
   RootMeta,
-  WorkingTree
+  WorkingTree,
 } from './types.js';
 import { idToPath, pathToId } from './tree.js';
 import {
@@ -35,7 +35,7 @@ import {
   decodeTree,
   type CustomEntry,
   type NodeOverride,
-  type TreeDiff
+  type TreeDiff,
 } from './url-state.js';
 
 // ---------------------------------------------------------------------------
@@ -88,7 +88,7 @@ export function encodePatch(tree: WorkingTree, base: Catalog): Patch {
   const diff = computeDiff(tree, base);
   const patch: Patch = {
     schema: PATCH_SCHEMA,
-    baseVersion: base.version ?? { date: 'unknown', sha: 'unknown' }
+    baseVersion: base.version ?? { date: 'unknown', sha: 'unknown' },
   };
 
   if (diff.lang) patch.language = diff.lang;
@@ -113,17 +113,14 @@ export function encodePatch(tree: WorkingTree, base: Catalog): Patch {
   if (diff.cu && diff.cu.length) {
     patch.custom = diff.cu.map((entry) => ({
       parentPath: entry.parentId ? idToPath(tree.nodes, entry.parentId) : null,
-      node: toPatchNode(entry.node)
+      node: toPatchNode(entry.node),
     }));
   }
 
   return patch;
 }
 
-export function applyPatch(
-  patch: Patch,
-  base: Catalog
-): { tree: WorkingTree; drift: DriftReport } {
+export function applyPatch(patch: Patch, base: Catalog): { tree: WorkingTree; drift: DriftReport } {
   const drift: DriftReport = { missingPaths: [], baseMismatch: null };
 
   if (base.version && patch.baseVersion && base.version.sha !== patch.baseVersion.sha) {
@@ -181,7 +178,7 @@ function toPatchNode(node: Node): PatchNode {
     type: node.type,
     name: node.name,
     menu: node.menu,
-    title: node.title
+    title: node.title,
   };
   if (!node.included) p.included = false;
   if (node.host !== undefined) p.host = node.host;
@@ -201,7 +198,7 @@ function fromPatchNode(p: PatchNode): Node {
     menu: p.menu,
     title: p.title,
     included: p.included ?? true,
-    children: p.children ? p.children.map(fromPatchNode) : []
+    children: p.children ? p.children.map(fromPatchNode) : [],
   };
   if (p.host !== undefined) n.host = p.host;
   if (p.probe) n.probe = p.probe;
@@ -226,7 +223,7 @@ export function patchFromYaml(text: string): Patch {
   const p = parsed as Partial<Patch>;
   if (p.schema !== PATCH_SCHEMA) {
     throw new Error(
-      `patchFromYaml: unsupported schema (got ${String(p.schema)}, expected ${PATCH_SCHEMA})`
+      `patchFromYaml: unsupported schema (got ${String(p.schema)}, expected ${PATCH_SCHEMA})`,
     );
   }
   if (!p.baseVersion || typeof p.baseVersion.sha !== 'string') {
@@ -292,13 +289,11 @@ export function writeHashState(tree: WorkingTree, base: Catalog): void {
 
 export function buildShareUrl(
   tree: WorkingTree,
-  base: Catalog
+  base: Catalog,
 ): { url: string; length: number; ok: boolean } {
   const slug = encodePatchToHash(encodePatch(tree, base));
   const baseUrl =
-    typeof window !== 'undefined'
-      ? window.location.href.split('#')[0]
-      : 'https://example.com/';
+    typeof window !== 'undefined' ? window.location.href.split('#')[0] : 'https://example.com/';
   const url = `${baseUrl}${URL_HASH_PREFIX}${slug}`;
   return { url, length: url.length, ok: url.length <= MAX_URL_LENGTH };
 }

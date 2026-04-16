@@ -18,7 +18,7 @@ const program = new Command();
 program
   .name('smokepingconf')
   .description(
-    'SmokePing config builder — render Targets files from a committable patch YAML on top of a versioned base catalogue'
+    'SmokePing config builder — render Targets files from a committable patch YAML on top of a versioned base catalogue',
   )
   .version(fullVersion(), '-v, --version', 'print CLI version and bundled catalog stamp');
 

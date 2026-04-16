@@ -29,7 +29,7 @@ function resolveVersion(): CatalogVersion {
   try {
     const sha = execFileSync('git', ['rev-parse', '--short=7', 'HEAD'], {
       cwd: repoRoot,
-      stdio: ['ignore', 'pipe', 'ignore']
+      stdio: ['ignore', 'pipe', 'ignore'],
     })
       .toString()
       .trim();
@@ -48,5 +48,5 @@ await writeFile(out, JSON.stringify(catalog, null, 2) + '\n');
 console.log(
   `parsed ${source} → ${out} ` +
     `(${catalog.nodes.length} categories, schemaVer ${catalog.schemaVer}, ` +
-    `version ${version.date}/${version.sha})`
+    `version ${version.date}/${version.sha})`,
 );

@@ -154,7 +154,7 @@ export function applyDiff(diff: TreeDiff, base: Catalog): WorkingTree {
 function walkUserTree(
   nodes: Node[],
   parentId: string | null,
-  visit: (node: Node, parentId: string | null) => 'continue' | 'skip'
+  visit: (node: Node, parentId: string | null) => 'continue' | 'skip',
 ): void {
   for (const n of nodes) {
     const action = visit(n, parentId);
@@ -176,8 +176,7 @@ function nodeFieldDiff(user: Node, curated: Node): NodeOverride | null {
     out.probe = user.probe === undefined ? null : user.probe;
   }
   if (!sameArray(user.comparisonChildren, curated.comparisonChildren)) {
-    out.comparisonChildren =
-      user.comparisonChildren === undefined ? null : user.comparisonChildren;
+    out.comparisonChildren = user.comparisonChildren === undefined ? null : user.comparisonChildren;
   }
   return Object.keys(out).length > 0 ? out : null;
 }

@@ -43,7 +43,7 @@ export function parseTargets(text: string, version?: CatalogVersion): Catalog {
         depth: header.depth,
         name: header.name,
         attrs: {},
-        children: []
+        children: [],
       };
       parent.children.push(node);
       stack.push(node);
@@ -98,7 +98,7 @@ const KNOWN_ATTRS = new Set([
   'recordtype',
   'url',
   'pingport',
-  'remark'
+  'remark',
 ]);
 
 function rawToCatalog(root: RawSection, version?: CatalogVersion): Catalog {
@@ -106,14 +106,14 @@ function rawToCatalog(root: RawSection, version?: CatalogVersion): Catalog {
   const rootMeta: RootMeta = {
     probe: rootProbe,
     menu: root.attrs.menu ?? 'Top',
-    title: root.attrs.title ?? 'Network Latency Grapher'
+    title: root.attrs.title ?? 'Network Latency Grapher',
   };
   if (root.attrs.remark !== undefined) rootMeta.remark = root.attrs.remark;
 
   const catalog: Catalog = {
     schemaVer: 2,
     root: rootMeta,
-    nodes: root.children.map((child) => rawToNode(child, ''))
+    nodes: root.children.map((child) => rawToNode(child, '')),
   };
   if (version) catalog.version = version;
   return catalog;
@@ -132,7 +132,7 @@ function rawToNode(raw: RawSection, parentPath: string): Node {
     menu: attrs.menu ?? raw.name,
     title: attrs.title ?? raw.name,
     included: true,
-    children: raw.children.map((child) => rawToNode(child, path))
+    children: raw.children.map((child) => rawToNode(child, path)),
   };
 
   const probe = buildProbe(attrs);

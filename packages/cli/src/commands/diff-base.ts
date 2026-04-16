@@ -22,7 +22,7 @@ export function registerDiffBase(program: Command): void {
     .option(
       '--on-drift <mode>',
       'exit non-zero if drift is detected: ignore | warn | error',
-      'warn'
+      'warn',
     )
     .action(async (patchPath: string, opts: DiffBaseOpts) => {
       process.exit(await runDiffBase(patchPath, opts));
@@ -46,12 +46,12 @@ export async function runDiffBase(patchPath: string, opts: DiffBaseOpts): Promis
     const a = drift.baseMismatch.actual;
     process.stdout.write('baseVersion mismatch:\n');
     process.stdout.write(`  patch pinned: ${p.date} @ ${p.sha}\n`);
-    process.stdout.write(
-      `  current base: ${a ? `${a.date} @ ${a.sha}` : '(no version stamp)'}\n`
-    );
+    process.stdout.write(`  current base: ${a ? `${a.date} @ ${a.sha}` : '(no version stamp)'}\n`);
   }
   if (drift.missingPaths.length > 0) {
-    process.stdout.write(`paths referenced by patch but missing from base (${drift.missingPaths.length}):\n`);
+    process.stdout.write(
+      `paths referenced by patch but missing from base (${drift.missingPaths.length}):\n`,
+    );
     for (const p of drift.missingPaths) process.stdout.write(`  - ${p}\n`);
   }
 

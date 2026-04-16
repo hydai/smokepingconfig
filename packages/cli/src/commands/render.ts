@@ -25,7 +25,7 @@ export function registerRender(program: Command): void {
     .option(
       '--on-drift <mode>',
       'behaviour when patch references paths missing from the base or pinned sha differs: ignore | warn | error',
-      'warn'
+      'warn',
     )
     .option('-o, --out <file>', 'write Targets to this file instead of stdout')
     .action(async (patchPath: string, opts: RenderOpts) => {
@@ -36,7 +36,7 @@ export function registerRender(program: Command): void {
 export async function runRender(patchPath: string, opts: RenderOpts): Promise<number> {
   if (!isDriftMode(opts.onDrift)) {
     process.stderr.write(
-      `render: --on-drift must be one of ignore | warn | error, got "${opts.onDrift}"\n`
+      `render: --on-drift must be one of ignore | warn | error, got "${opts.onDrift}"\n`,
     );
     return 2;
   }
@@ -72,7 +72,10 @@ export async function runRender(patchPath: string, opts: RenderOpts): Promise<nu
 
 function formatDrift(drift: {
   missingPaths: string[];
-  baseMismatch: { patch: { date: string; sha: string }; actual?: { date: string; sha: string } } | null;
+  baseMismatch: {
+    patch: { date: string; sha: string };
+    actual?: { date: string; sha: string };
+  } | null;
 }): string[] {
   const lines: string[] = [];
   if (drift.baseMismatch) {
@@ -80,7 +83,7 @@ function formatDrift(drift: {
     const a = drift.baseMismatch.actual;
     lines.push(
       `baseVersion mismatch: patch pinned ${p.date} @ ${p.sha}` +
-        (a ? `, current base is ${a.date} @ ${a.sha}` : ', current base has no version stamp')
+        (a ? `, current base is ${a.date} @ ${a.sha}` : ', current base has no version stamp'),
     );
   }
   for (const p of drift.missingPaths) {

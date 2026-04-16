@@ -5,5 +5,5 @@ register('zh-TW', () => import('./zh-TW.json'));
 
 init({
   fallbackLocale: 'en',
-  initialLocale: 'en'
+  initialLocale: 'en',
 });

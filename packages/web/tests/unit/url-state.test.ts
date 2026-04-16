@@ -60,9 +60,9 @@ describe('computeDiff / applyDiff', () => {
           title: 'Router',
           included: true,
           host: 'router.local',
-          children: []
-        }
-      ]
+          children: [],
+        },
+      ],
     };
     withCustom(t, null, custom);
     const decoded = applyDiff(computeDiff(t, baseCatalog), baseCatalog);
@@ -117,9 +117,9 @@ describe('encodeTree / decodeTree', () => {
     const bad = encodeTree(
       {
         ...freshTree(),
-        schemaVer: 2
+        schemaVer: 2,
       },
-      baseCatalog
+      baseCatalog,
     );
     // A slug whose payload claims v:99 must be rejected.
     const raw = JSON.stringify({ v: 99 });
@@ -143,7 +143,7 @@ describe('encodeTree / decodeTree', () => {
       'c:DNS/L3-1',
       'c:DNS/L3-2',
       'c:DNS/Quad9',
-      'c:Hosting/Linode/US-East'
+      'c:Hosting/Linode/US-East',
     ];
     for (const id of toDisable) {
       const n = findNode(t.nodes, id);
@@ -162,7 +162,7 @@ describe('encodeTree / decodeTree', () => {
       title: 'LAN',
       included: true,
       host: '192.168.1.1',
-      children: []
+      children: [],
     });
     const slug = encodeTree(t, baseCatalog);
     expect(slug.length).toBeLessThan(1500);

@@ -10,18 +10,18 @@ export default defineConfig({
     command: 'npm run build && npm run preview -- --port 4173',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000
+    timeout: 120_000,
   },
   use: {
     baseURL: 'http://localhost:4173',
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
   },
   projects: [
     {
       name: 'chromium',
       use: {
-        browserName: 'chromium'
-      }
-    }
-  ]
+        browserName: 'chromium',
+      },
+    },
+  ],
 });
