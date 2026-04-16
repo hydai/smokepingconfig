@@ -7,7 +7,6 @@ export default [
     ignores: [
       'packages/web/build/**',
       'packages/web/.svelte-kit/**',
-      'packages/cli/dist/**',
       'node_modules/**',
     ],
   },
