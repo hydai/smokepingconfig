@@ -58,6 +58,10 @@ jobs:
         if: matrix.cross
         run: cargo install cross --locked
 
+      - name: Stage catalog.json for cross build
+        if: matrix.cross
+        run: cp packages/core/src/catalog.json packages/cli-rs/catalog.json
+
       - name: Build (cross)
         if: matrix.cross
         working-directory: packages/cli-rs
