@@ -267,12 +267,12 @@ changes, run `cargo publish --dry-run --allow-dirty` locally from
 **Commit prefix cheatsheet** (scope must be `cli-rs` to count for the
 Rust CLI release):
 
-| Prefix           | Version bump |
-|------------------|--------------|
-| `feat(cli-rs):`  | minor        |
-| `fix(cli-rs):`   | patch        |
-| `feat(cli-rs)!:` | major        |
-| `fix(cli-rs)!:`  | major        |
+| Prefix                                           | Version bump              |
+| ------------------------------------------------ | ------------------------- |
+| `feat(cli-rs):`                                  | minor                     |
+| `fix(cli-rs):`                                   | patch                     |
+| `feat(cli-rs)!:`                                 | major                     |
+| `fix(cli-rs)!:`                                  | major                     |
 | `chore(cli-rs):`, `ci(cli-rs):`, `docs(cli-rs):` | no bump, not in changelog |
 
 ## Feature ideas
