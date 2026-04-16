@@ -5,6 +5,12 @@ edition = "2024"
 rust-version = "1.85"
 license = "MIT"
 description = "SmokePing config builder — render Targets files from a committable patch YAML on top of a versioned base catalogue"
+repository = "https://github.com/hydai/smokepingconfig"
+homepage = "https://github.com/hydai/smokepingconfig"
+documentation = "https://docs.rs/smokeping-config"
+readme = "README.md"
+keywords = ["smokeping", "cli", "monitoring", "config", "targets"]
+categories = ["command-line-utilities"]
 
 [[bin]]
 name = "smokeping-config"
