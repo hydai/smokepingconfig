@@ -26,8 +26,8 @@ fn happy_patch_yaml() -> String {
     format!(
         r#"schema: 1
 baseVersion:
-  date: {}
-  sha: {}
+  date: "{}"
+  sha: "{}"
 excluded:
   - /CDN/Akamai
 overrides:
@@ -43,8 +43,8 @@ fn drift_patch_yaml() -> String {
     format!(
         r#"schema: 1
 baseVersion:
-  date: {}
-  sha: {}
+  date: "{}"
+  sha: "{}"
 excluded:
   - /CDN/DoesNotExist
 "#,
@@ -214,7 +214,7 @@ fn render_unknown_on_drift_exits_2() {
 fn diff_base_clean() {
     let dir = tempfile::tempdir().unwrap();
     let patch_yaml = format!(
-        "schema: 1\nbaseVersion:\n  date: {}\n  sha: {}\n",
+        "schema: 1\nbaseVersion:\n  date: \"{}\"\n  sha: \"{}\"\n",
         catalog_date(),
         catalog_sha()
     );
