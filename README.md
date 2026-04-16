@@ -84,7 +84,6 @@ npm -w @smokepingconf/cli run build       # rebuild the CLI bundle only
 
 ```
 config.txt                           curated catalogue source
-docs/superpowers/specs/…             design notes (if present)
 
 packages/core/
 ├── src/
@@ -94,7 +93,10 @@ packages/core/
 │   ├── tree.ts                      findNode, freshTree, idToPath, pathToId
 │   ├── url-state.ts                 TreeDiff + encodeTree/decodeTree (v:1)
 │   ├── patch.ts                     Patch + encodePatch/applyPatch + YAML I/O
-│   └── catalog.json                 generated, version-stamped
+│   ├── catalog.json                 generated, version-stamped
+│   └── index.ts                     barrel re-export
+├── tests/                           parser, serializer, patch, probes,
+│                                    roundtrip, tree, catalog-version
 └── scripts/parse-config.ts          prebuild: config.txt → catalog.json
 
 packages/web/
@@ -103,9 +105,11 @@ packages/web/
 │   ├── lib/components/
 │   │   ├── Actions.svelte           Copy / Download / Share / Export / Import / Reset
 │   │   ├── ImportPatchModal.svelte  paste / upload + drift preview + apply
-│   │   └── …                        TreeView, TreeNode, EditForm, Preview, ProbesNotice
-│   ├── lib/i18n/                    en.json + zh-TW.json
-│   └── routes/                      +layout.svelte + +page.svelte
+│   │   └── …                        TreeView, TreeNode, EditForm, Preview,
+│   │                                ProbesNotice, AddButton, LangToggle
+│   ├── lib/i18n/                    en.json, zh-TW.json, index.ts (loader)
+│   └── routes/                      +layout.svelte, +layout.ts (SSR off),
+│                                    +page.svelte
 ├── tests/unit/                      store, url-state
 └── tests/e2e/flow.spec.ts           Playwright
 
