@@ -12,6 +12,19 @@ readme = "README.md"
 keywords = ["smokeping", "cli", "monitoring", "config", "targets"]
 categories = ["command-line-utilities"]
 
+# `catalog.json` is generated from config.txt by the core workspace's prebuild
+# script (see /packages/core/scripts/parse-config.ts). It's gitignored inside
+# this crate (staged via `cp ../core/src/catalog.json .` before publishing),
+# so we list files explicitly to make sure the tarball includes it.
+include = [
+    "src/**/*.rs",
+    "tests/**/*.rs",
+    "build.rs",
+    "catalog.json",
+    "Cargo.toml",
+    "README.md",
+]
+
 [[bin]]
 name = "smokeping-config"
 path = "src/main.rs"

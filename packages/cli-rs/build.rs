@@ -17,7 +17,7 @@ fn main() {
         local_src
     } else {
         panic!(
-            "catalog.json not found — run `npm -w @smokeping-config/core run prebuild` \
+            "catalog.json not found — run `npm -w @smokepingconf/core run prebuild` \
              from the repo root, or stage catalog.json into packages/cli-rs/"
         );
     };
